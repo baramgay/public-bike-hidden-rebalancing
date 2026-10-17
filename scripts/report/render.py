@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def main() -> int:
-    pptx = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "outputs" / "report" / "누비자_분석보고서.pptx"
+    pptx = Path(sys.argv[1]) if len(sys.argv) > 1 else max((ROOT / "outputs" / "report").glob("*_분석보고서.pptx"), key=lambda p: p.stat().st_mtime)
     dpi = int(sys.argv[2]) if len(sys.argv) > 2 else 110
     pdf = pptx.with_suffix(".pdf")
     r = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",

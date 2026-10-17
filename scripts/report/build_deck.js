@@ -8,7 +8,10 @@ const ROOT = path.resolve(__dirname, "../..");
 const N = JSON.parse(fs.readFileSync(path.join(ROOT, "outputs/report/report_numbers.json"), "utf8"));
 const DS = JSON.parse(fs.readFileSync(path.join(ROOT, "docs/report/data_sources.json"), "utf8"));
 const REFS = JSON.parse(fs.readFileSync(path.join(ROOT, "docs/report/references.json"), "utf8"));
-const OUT = path.join(ROOT, "outputs/report/누비자_분석보고서.pptx");
+// 이름은 공개 저장소에 넣지 않고 로컬 파일(outputs/report/author.txt, 저장소 제외)에서 읽는다
+const AUTHOR_FILE = path.join(ROOT, "outputs/report/author.txt");
+const AUTHOR = fs.existsSync(AUTHOR_FILE) ? fs.readFileSync(AUTHOR_FILE, "utf8").trim() : "이름";
+const OUT = path.join(ROOT, `outputs/report/${AUTHOR}_분석보고서.pptx`);
 const IMG = (p) => path.join(ROOT, p);
 const FIG = (name) => `outputs/report_figures/${name}.png`;
 
@@ -16,9 +19,9 @@ const FIG = (name) => `outputs/report_figures/${name}.png`;
 const TITLE_MAIN = "기록 사이의 이동";
 const TITLE_SUB = "공공자전거 숨은 재배치 진단과 AI·형평 배치 제안";
 const CASE = "창원시 공영자전거 ‘누비자’ 이용기록 1,307만 건으로 본 전국 적용형 공개 분석";
-const TEAM = "팀명 ○○○ (참가신청서와 동일하게 입력)";
+const TEAM = `${AUTHOR} (개인 참가)`;
 const TOPIC = "공공자전거 이용기록을 자전거 번호로 이어 기록 없는 재배치 이동을 찾고, AI 수요 예측과 취약 거점 최소 보장으로 더 공정하고 덜 달리는 재배치를 설계·검증(창원 누비자 사례, 다른 도시에 그대로 적용 가능한 공개 방법)";
-const CODE_URL = "https://github.com/(공개 저장소 주소 확정 후 입력)";
+const CODE_URL = "https://github.com/baramgay/public-bike-hidden-rebalancing";
 const RUN_HEAD = `${TITLE_MAIN} · ${TITLE_SUB}`;
 
 const mm = (v) => v / 25.4;
