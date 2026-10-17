@@ -1,0 +1,13 @@
+# Direct dependencies verified in the working environment; clean-environment installation remains to be tested.
+requests==2.34.2
+pandas==2.3.3
+numpy==2.4.5
+openpyxl==3.1.5
+matplotlib==3.10.9
+tabulate==0.10.0
+beautifulsoup4==4.14.3
+duckdb==1.5.4
+pyarrow==24.0.0
+scikit-learn==1.8.0
+scipy==1.17.1
+statsmodels>=0.14

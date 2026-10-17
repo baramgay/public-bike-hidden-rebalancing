@@ -1,0 +1,68 @@
+{
+  "created_kst": "2026-10-17T19:46:56",
+  "splits": {
+    "train": [
+      "2023-02-01",
+      "2024-09-30"
+    ],
+    "validation": [
+      "2024-10-01",
+      "2024-12-31"
+    ],
+    "test": [
+      "2025-01-01",
+      "2025-06-30"
+    ]
+  },
+  "params": {
+    "loss": "poisson",
+    "learning_rate": 0.05,
+    "max_iter": 400,
+    "max_leaf_nodes": 31,
+    "min_samples_leaf": 40,
+    "l2_regularization": 1.0,
+    "random_state": 42
+  },
+  "features_ai": [
+    "q_lag1",
+    "q_lag7",
+    "q_lag14",
+    "q_lag21",
+    "q_lag28",
+    "q_rule4w",
+    "q_rule4w_std",
+    "q_mean7",
+    "q_mean28",
+    "q_max28",
+    "dep_lag1",
+    "dep_lag7",
+    "dep_mean28",
+    "ret_lag1",
+    "ret_lag7",
+    "ret_mean28",
+    "net_mean28",
+    "city_dep_lag1",
+    "city_dep_lag7",
+    "dow",
+    "month",
+    "holiday",
+    "holiday_prev",
+    "holiday_next",
+    "offday",
+    "rain_prev",
+    "avgTa_prev",
+    "maxTa_prev",
+    "elev_m"
+  ],
+  "features_ai_weather_extra": [
+    "rain",
+    "rain_flag",
+    "avgTa",
+    "maxTa",
+    "avgWs"
+  ],
+  "selection": "검증기간 지표로 확인 후 고정. 시험기간은 같은 고정 모형으로 1회 예측",
+  "train_rows": 220066,
+  "script_sha256": "614fae3ff48828494dfb86f691599173081745ad187cb5142159c2d0f02ae6b9",
+  "runtime_s": 68.1
+}

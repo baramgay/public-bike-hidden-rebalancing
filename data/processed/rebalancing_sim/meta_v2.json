@@ -1,0 +1,188 @@
+{
+  "tuned": {
+    "rule4w": {
+      "alpha": 1.25,
+      "beta": 2.0,
+      "validation_served_rate": 0.9583000822732113
+    },
+    "ai": {
+      "alpha": 1.25,
+      "beta": 1.0,
+      "validation_served_rate": 0.9606785110442932
+    },
+    "ai_weather": {
+      "alpha": 1.0,
+      "beta": 0.0,
+      "validation_served_rate": 0.9619896116687956
+    },
+    "oracle": {
+      "alpha": 1.25,
+      "beta": 2.0,
+      "validation_served_rate": 0.9769602066136461
+    },
+    "rule4w_fair": {
+      "alpha": 1.25,
+      "beta": 2.0,
+      "validation_served_rate": 0.9583000822732113
+    },
+    "ai_fair": {
+      "alpha": 1.25,
+      "beta": 1.0,
+      "validation_served_rate": 0.9606785110442932
+    },
+    "ai_weather_fair": {
+      "alpha": 1.0,
+      "beta": 0.0,
+      "validation_served_rate": 0.9619896116687956
+    },
+    "ai_fair_g3": {
+      "alpha": 1.25,
+      "beta": 1.0,
+      "validation_served_rate": 0.9606785110442932
+    },
+    "ai_fair_both": {
+      "alpha": 1.25,
+      "beta": 1.0,
+      "validation_served_rate": 0.9606785110442932
+    },
+    "ai_fair_w15": {
+      "alpha": 1.25,
+      "beta": 1.0,
+      "validation_served_rate": 0.9606785110442932
+    }
+  },
+  "periods": {
+    "validation": [
+      "2024-10-01",
+      "2024-12-31"
+    ],
+    "test": [
+      "2025-01-01",
+      "2025-06-30"
+    ]
+  },
+  "budgets": [
+    0,
+    250,
+    500,
+    750,
+    1000,
+    1250,
+    1500,
+    1750,
+    2000,
+    2500
+  ],
+  "plan_hours": [
+    2,
+    23
+  ],
+  "truck_capacity": 20,
+  "depot": 243,
+  "fair_group": "취약",
+  "strategies": {
+    "none": [
+      null,
+      null,
+      0,
+      null,
+      1.0
+    ],
+    "rule4w": [
+      "rule4w",
+      null,
+      0,
+      null,
+      1.0
+    ],
+    "rule4w_fair": [
+      "rule4w",
+      "취약",
+      2,
+      null,
+      1.0
+    ],
+    "ai": [
+      "ai",
+      null,
+      0,
+      null,
+      1.0
+    ],
+    "ai_fair": [
+      "ai",
+      "취약",
+      2,
+      null,
+      1.0
+    ],
+    "ai_weather": [
+      "ai_weather",
+      null,
+      0,
+      null,
+      1.0
+    ],
+    "ai_weather_fair": [
+      "ai_weather",
+      "취약",
+      2,
+      null,
+      1.0
+    ],
+    "oracle": [
+      "oracle",
+      null,
+      0,
+      null,
+      1.0
+    ]
+  },
+  "sensitivity": {
+    "ai_fair_g3": [
+      "ai",
+      "취약",
+      3,
+      null,
+      1.0
+    ],
+    "ai_fair_both": [
+      "ai",
+      "복합취약",
+      2,
+      null,
+      1.0
+    ],
+    "ai_fair_w15": [
+      "ai",
+      null,
+      0,
+      "취약",
+      1.5
+    ]
+  },
+  "q_inputs": {
+    "validation": {
+      "file": "C:\\업무\\교통공모전\\data\\processed\\forecast\\q_pred_validation.parquet",
+      "rows": 40677,
+      "max_abs_diff_q_actual_vs_sim": 0.0,
+      "station_days_missing_in_file": 2471
+    },
+    "test": {
+      "file": "C:\\업무\\교통공모전\\data\\processed\\forecast\\q_pred_test.parquet",
+      "rows": 80055,
+      "max_abs_diff_q_actual_vs_sim": 0.0,
+      "station_days_missing_in_file": 4834
+    }
+  },
+  "groups": {
+    "고지대(상위25%)": 123,
+    "복합취약": 49,
+    "취약": 165
+  },
+  "stations": 469,
+  "stable_stations_last_split": 441,
+  "pred_validation": "C:\\업무\\교통공모전\\data\\processed\\forecast\\selected_predictions_validation.parquet",
+  "pred_test": "C:\\업무\\교통공모전\\data\\processed\\forecast\\selected_predictions_test.parquet",
+  "runtime_s": 1360.1
+}

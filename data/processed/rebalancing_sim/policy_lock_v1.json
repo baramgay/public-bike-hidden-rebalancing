@@ -1,0 +1,50 @@
+{
+  "purpose": "재배치 전략 비교 실험 사전 고정(시험기간 2025-01-01~06-30 결과를 보기 전)",
+  "locked_at_kst": "2026-10-17T14:16:39",
+  "test_results_seen": false,
+  "validation_used_for": "전략별 alpha·beta 선택(기준 예산 1500대/밤, 관측 대여 성공률 최대)",
+  "strategies": {
+    "none": "재배치 없음",
+    "rule4w": "최근 4주 같은 요일 평균 필요 대수(경험 규칙)",
+    "rule4w_fair": "경험 규칙 + 취약 거점 아침 최소 2대",
+    "ai": "머신러닝 거점·일 필요 대수 예측(누출 없음: 전날까지 정보)",
+    "ai_fair": "ai + 취약 거점 아침 최소 2대 (주 형평 정책)",
+    "ai_weather": "ai + 당일 관측 날씨(기상예보가 정확하다는 가정의 상한 성격)",
+    "ai_weather_fair": "ai_weather + 취약 거점 최소 2대",
+    "oracle": "그날 실제 필요 대수(예측 완벽 상한)"
+  },
+  "sensitivity_at_budget_1500": {
+    "ai_fair_g3": "보장 3대",
+    "ai_fair_both": "복합취약(버스·시설 모두 하위) 집단에 2대",
+    "ai_fair_w15": "보장 대신 취약 가치 1.5배"
+  },
+  "fair_group": "취약 = station_vulnerability.csv vulnerable==True (bus_poor OR facility_poor, 하위 25%, 잠금 bus_facility_quantile_flags_v2)",
+  "budgets_per_night": [
+    250,
+    500,
+    750,
+    1000,
+    1250,
+    1500,
+    1750,
+    2000,
+    2500
+  ],
+  "primary_metrics": [
+    "관측 대여 성공률(전체·취약·비취약·고지대)",
+    "거점 빈 시간(05~24시, 기간 내내 대상인 거점)",
+    "밤당 이동 대수",
+    "차량 경로 km(적재 20대, 직선, 운영센터 243 출발·복귀)"
+  ],
+  "headline_comparisons": [
+    "ai vs rule4w 같은 예산의 성공률 차이",
+    "같은 성공률에 필요한 이동 대수 차이(보간)",
+    "ai_fair vs ai: 취약 거점 빈 시간·성공률 변화와 전체 성공률 비용"
+  ],
+  "groups_file_sha256": "1ef1e528e287b40522485359cc104c2ad90d46be89b24d93f8b717ad1f3382d6",
+  "code_sha256": {
+    "scripts/analysis/simulate_rebalancing.py": "d17517d8099919f9969bd02d78760a96082048f305510255ebb86d44c94d3ece",
+    "scripts/analysis/run_rebalancing_experiments.py": "5d59ac12781b8543ead73973b7d2677c03badf0c5651360db175caa5cba56db4"
+  },
+  "note": "q 예측 파일(q_pred_*.parquet)은 예측 담당이 검증기간만으로 모형을 고정한 뒤 생성. 시뮬레이터 코드 변경 시 잠금을 새 버전으로 추가하고 이전 잠금은 보존"
+}

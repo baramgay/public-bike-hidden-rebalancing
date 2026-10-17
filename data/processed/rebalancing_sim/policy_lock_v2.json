@@ -1,0 +1,28 @@
+{
+  "purpose": "오류 수정 재평가(v2). v1 잠금·결과(*_main.csv)는 보존",
+  "locked_at_kst": "2026-10-17T23:55:30",
+  "test_results_seen": true,
+  "test_results_seen_note": "v1 시험 결과를 본 뒤의 수정. 전략·예산·지표·α·β 선택 절차(검증기간, 예산 1500 성공률 최대)는 v1과 동일, 시험 결과로 바꾼 설정 없음",
+  "fixes": {
+    "R01": "load_inputs: 재생 시작을 첫날 00시→02시(초기재고 시각). 00~02시 이용이 초기재고·반납 예정과 이중 반영되던 경계 오류(Codex 회귀 7개로 확인)",
+    "R02": "취약 거점 최소 보장을 λ와 같은 대상 거점(직전 28일 활동, 운영센터 제외)에만 적용. v1은 휴면 거점에도 보장(시험기간 취약 165곳 중 10곳, 거점·일 6.0%)"
+  },
+  "unchanged": [
+    "strategies",
+    "sensitivity_at_budget_1500",
+    "fair_group",
+    "budgets_per_night",
+    "primary_metrics",
+    "headline_comparisons"
+  ],
+  "groups_file_sha256": "1ef1e528e287b40522485359cc104c2ad90d46be89b24d93f8b717ad1f3382d6",
+  "code_sha256": {
+    "scripts/analysis/simulate_rebalancing.py": "b61df5bb787cb61481952cd11abafb7e1f7426b175eaea756ed219b94b669ca0",
+    "scripts/analysis/run_rebalancing_experiments.py": "7a6141a4ee8af5270a5a61fa8db1e1769bbc1d974fedf58cde7bb93281f8df21"
+  },
+  "v1_code_sha256": {
+    "scripts/analysis/simulate_rebalancing.py": "d17517d8099919f9969bd02d78760a96082048f305510255ebb86d44c94d3ece",
+    "scripts/analysis/run_rebalancing_experiments.py": "5d59ac12781b8543ead73973b7d2677c03badf0c5651360db175caa5cba56db4"
+  },
+  "outputs_tag": "v2"
+}
