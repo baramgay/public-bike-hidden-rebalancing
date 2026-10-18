@@ -178,7 +178,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   pill(s, "분석 배경 및 목적", 12, 31, 34);
   head(s, "이용기록 사이에 숨은 이동: 반납 거점과 다음 대여 거점의 불일치", 39.2);
   bullets(s, [
-    "공공자전거 이용기록에는 대여·반납 거점과 시각만 남음. 같은 자전거 번호를 시간순으로 이으면 **반납 거점과 다음 대여 거점이 다른 경우**가 나타나며, 그 사이 자전거는 **기록 없이 이동**함(재배치 차량 중심, 정비 수거·기록 누락 일부 포함)",
+    "공공자전거 이용기록에는 대여·반납 거점과 시각만 남음. 같은 자전거의 **반납 거점과 다음 대여 거점이 다른 경우**를 ‘**기록 없는 이동**’으로 집계함. 재배치·정비·기록 누락 등이 포함될 수 있는 **자전거별 이동 정황**으로, 차량 운행 횟수와는 구분함",
     "창원시 공영자전거 ‘누비자’(터미널 454곳·자전거 5,745대, 2025년 운영사 공시)의 3년 이용기록으로 숨은 이동의 **규모·시간·장소**를 추적하고, **AI 예측·형평 기준**을 더한 재배치 방안을 실험으로 검증",
   ], 12, 47, 186, 17, { size: 8.6, gap: 1.5 });
 
@@ -444,7 +444,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   cap(s, fig(`취약 거점 형평 비교(1,500대/밤). 성공률은 취약 분류 ${EQ.group_stations}곳, 빈 시간(05~24시 재고 0인 시간)은 기간 내내 운영된 ${ST.equity_station.vulnerable.empty_hours_per_station_day.n}곳 평균`), 12, 212, 85, 7);
   const k = [
     [`${int(saveAI)}`, "대 감축", `같은 성공률(${pct(ES.target_served_rate)})에 필요한 밤당 이동: AI 예측 vs 경험 규칙(−${pct(saveAI / ES.rule4w.moves_per_night)})`],
-    [sgn(PF.gain_at_budget_1500_pp.ai, 2), "%p", "같은 예산(1,500대/밤)의 대여 성공률: AI 예측 vs 경험 규칙"],
+    [int(sim("ai", 1500).served - sim("rule4w", 1500).served), "건 추가 성공", `대여 성공률 ${sgn(PF.gain_at_budget_1500_pp.ai, 2)}%p. AI 예측 vs 경험 규칙, 2025년 상반기 가상 운영·같은 예산 1,500대/밤`],
     [fx(EQ.vulnerable_gain_ai_fair_vs_ai.zero_hours_pct, 0), "%", "취약 거점 빈 시간: AI+취약 보장 vs AI 예측"],
     [fx(EQ.overall_cost_ai_fair_minus_ai_pp, 3), "%p", "보장의 대가: 전체 대여 성공률 변화(같은 예산)"],
   ];
@@ -459,7 +459,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     `AI 예측은 같은 서비스 수준에서 밤당 주행 약 ${fx(kmSaveAI, 0)}km 감축(예산 곡선 보간·직선 경로 모형) → 연 ${fx(yr(kmSaveAI, co2.diesel_low), 1)}~${fx(yr(kmSaveAI, co2.diesel_high), 1)}t CO2(같은 효과 365일, 1톤 경유 화물차). **예측만으로 줄어드는 탄소는 제한적**`,
     `**차종 차이가 더 큼**: 2024년 경로 추정 연 ${fx(N.truck_km_year_2024_cap20 / 1e4, 1)}만 km를 전량 경유로 달리면 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t, 전량 전기면 **${fx(N.observed_co2_t_2024.ev, 0)}t(약 절반)**. 실제 감축량은 차량별 연료·주행 확인 후 산정`,
     "운영사 감축량 산식은 승용차 대체 100%를 가정하고 재배치 배출을 미차감. 대체율이 해외 사례처럼 낮으면(2~21%, 참고문헌 2·3) 재배치 배출 비중 확대 → **‘순감축’ 회계 필요**",
-    `**AI 효과는 탄소보다 서비스·형평에서 뚜렷함**: 같은 예산으로 반년 대여 ${int(sim("ai", 1500).served - sim("rule4w", 1500).served)}건 추가 성공, 보장 추가 시 취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소`,
+    "**AI 예측의 효과는 탄소보다 대여 성공에서, 최소 보장의 효과는 취약 거점 빈 시간에서 뚜렷함**(위 성과 카드)",
   ], 16, 229.5, 121, 33, { size: 8, gap: 1.3 });
   // 통계적 확인(95% 신뢰구간, scripts/analysis/stat_tests.py)
   const fc = ST.forecast.ai_vs_rule4w, ar = ST.ai_vs_rule_station.all.success_rate.pooled;
@@ -566,18 +566,28 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   158, 118, 40, 28, { fontSize: 8, lineSpacingMultiple: 1.17 });
   cap(s, fig(`시의회 쟁점 비중(관련 발언 대비, 발언당 최대 2개). 두 모델 일치: 관련성 ${pct(CO.relevant_agreement, 0)}, 주제 ${pct(CO.primary_code_agreement, 0)}`), 72, 147, 126);
 
-  sub(s, "기대효과와 파급효과", 72, 153);
-  const effects = [
-    ["운영", `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대·주행 약 ${fx(kmSaveAI, 0)}km 감축(시험기간 보간 추정), 인력·연료비 절감 여지`],
-    ["형평", `버스·생활시설 접근이 약한 거점의 빈 거치대 시간 ${fx(vulnGain, 0)}% 감소(05~24시 기준)`],
-    ["환경", "재배치 배출을 포함한 ‘순감축’ 회계, 전량 전기 전환 시 같은 거리 배출 약 절반(시나리오)"],
+  sub(s, "추진 순서(향후 추진안)와 파급효과", 72, 153);
+  const road = [
+    ["① 진단·지표 정비", "집계 기준 정비, 운영기관 배차·정비 기록과 추정 이동 대조. 공개 시 추정치·산정 조건 명시"],
+    ["② 효율·형평 공동 시범", "실제 재고·차량·거치대 용량·운행·상하차 시간을 반영할 권역 선정, AI 예측과 최소 2대 보장 함께 적용"],
+    ["③ 성과 확인 후 확대", "전체 대여 성공률, 취약 거점 빈 시간·악화 거점, 실제 주행거리·작업시간 확인 후 확대 판단"],
+  ];
+  road.forEach(([t, d], i) => {
+    const x = 72 + i * 34, w = 30.5;
+    box(s, x, 159, w, 24, { fill: C.bg, r: 1.2 });
+    T(s, t, x + 1.8, 160, w - 3, 4.5, { fontFace: F.semi, fontSize: 7.9, color: C.accent });
+    T(s, d, x + 1.8, 164.6, w - 3, 18, { fontSize: 7.6, color: C.ink, lineSpacingMultiple: 1.1 });
+    if (i < 2) T(s, "→", x + w, 159, 3.5, 24, { fontSize: 9, color: C.teal, align: "center", valign: "middle" });
+  });
+  const tail = [
+    ["병행", "차량 전기화는 시범 이후로 미루지 않고 차량별 연료·주행과 교체 여건에 따라 별도 추진"],
     ["전국 확산", "자전거 번호·시각·거점이 담긴 이력을 도시별로 변환하면 같은 진단 절차 적용 가능. 공공데이터 개방 기준에 ‘자전거 번호’ 포함 권고"],
   ];
-  effects.forEach(([t, d], i) => {
-    const y = 159 + i * 10.6;
-    box(s, 72, y, 98.5, 9.6, { fill: i % 2 ? C.white : C.bg, r: 1.2 });
-    T(s, t, 74, y, 15, 9.6, { fontFace: F.semi, fontSize: 8.2, color: C.accent, valign: "middle" });
-    T(s, d, 89, y, 79.5, 9.6, { fontSize: 8, color: C.ink, valign: "middle", lineSpacingMultiple: 1.1 });
+  tail.forEach(([t, d], i) => {
+    const y = 184.5 + i * 9.6;
+    box(s, 72, y, 98.5, 8.8, { fill: i ? C.bg : C.white, r: 1.2 });
+    T(s, t, 74, y, 15, 8.8, { fontFace: F.semi, fontSize: 8.2, color: C.accent, valign: "middle" });
+    T(s, d, 89, y, 79.5, 8.8, { fontSize: 8, color: C.ink, valign: "middle", lineSpacingMultiple: 1.1 });
   });
   fitImg(s, "design/sol/derived/09_korea_network_forest_w.png", 172.5, 158.5, 25.5, 25.5, "center");   // 개념도(실제 확산 실적·행정경계 아님)
   cap(s, "개념도: 같은 절차를\n다른 도시로", 172.5, 184.5, 25.5, 8);
