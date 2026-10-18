@@ -77,7 +77,7 @@ def main() -> int:
     ax.set_axis_off()
 
     for name, (x, y) in DISTRICTS.items():
-        ax.text(x, y, name, fontsize=S.FS_SMALL, color=S.MUTED, ha="center", va="center", zorder=1)
+        ax.text(x, y, name, fontsize=S.FS_SMALL, color=S.INK2, ha="center", va="center", zorder=1)
 
     bounds = [0, 0.05, 0.10, 0.20, 0.35, 0.50, 1.0]
     cmap = ListedColormap(S.RAMP[1:])

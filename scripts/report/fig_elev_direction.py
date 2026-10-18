@@ -67,7 +67,7 @@ def main() -> int:
                 color=S.FOREST if strong else S.INK, fontweight="bold")
         ax.text(X0 - 2.0, yc - 2.3, f"n={int(r['n']):,}", ha="right", va="center", fontsize=7.5, color=S.INK2)
     ax.text(0, 1.2, f"{YEAR}년 · 평지는 출발·도착 거점 고도차 {THRESHOLD_M}m 이내", ha="left", va="bottom",
-            fontsize=7.5, color=S.MUTED)
+            fontsize=7.5, color=S.INK2)
 
     (S.FIG_DIR / "elev_direction.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(out, ensure_ascii=False))

@@ -1,4 +1,4 @@
-"""PPTX → PDF(PowerPoint) → 쪽별 PNG, 내장 글꼴 점검. 사용: python render.py [pptx] [dpi]"""
+"""PPTX → PDF(PowerPoint) → 한글 띄어쓰기 복원 → 쪽별 PNG, 내장 글꼴 점검. 사용: python render.py [pptx] [dpi]"""
 from __future__ import annotations
 
 import subprocess
@@ -6,6 +6,9 @@ import sys
 from pathlib import Path
 
 import fitz
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pdf_text_spaces  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -20,6 +23,7 @@ def main() -> int:
     if r.returncode != 0:
         print(r.stdout, r.stderr)
         return r.returncode
+    print(f"spaces={pdf_text_spaces.fix(pdf)}")   # PowerPoint가 빠뜨린 한글 낱말 사이 공백(보이지 않는 글자)
     doc = fitz.open(pdf)
     out = pptx.parent / "render"
     out.mkdir(exist_ok=True)
