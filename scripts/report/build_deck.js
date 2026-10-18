@@ -146,7 +146,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
 {
   const s = pres.addSlide();
   s.background = { color: C.white };
-  img(s, "design/sol/01_cover_forest.png", 0, 0, 210, 297, { sizing: { type: "cover", w: mm(210), h: mm(297) } });
+  img(s, "design/sol/01_cover_forest_faces.png", 0, 0, 210, 297, { sizing: { type: "cover", w: mm(210), h: mm(297) } });
   T(s, "AI와 함께하는 교통문제 해결을 위한 데이터 분석 공모전 · 분석보고서", 16, 15, 178, 7,
     { fontFace: F.semi, fontSize: 12, color: C.forest });
   T(s, TITLE_MAIN, 16, 27, 178, 20, { fontFace: F.xb, fontSize: 46, color: C.forest, lineSpacingMultiple: 1.0 });
