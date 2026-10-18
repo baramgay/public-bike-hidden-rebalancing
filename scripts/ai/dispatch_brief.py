@@ -98,23 +98,23 @@ def night_plan(date: str, strategy: str = "ai_fair", budget: int = 1500) -> dict
                              (coord(sids[i], "lat", lat0) - lat0) * 110.57]) for i in set(pickups) | set(drops)}
     depot = 243
     xy[depot] = np.array([(st.loc[depot, "lon"] - lon0) * 111.32 * np.cos(np.radians(lat0)), (st.loc[depot, "lat"] - lat0) * 110.57])
-    runs = truck_runs({sids[i]: n for i, n in pickups.items()}, {sids[i]: n for i, n in drops.items()}, xy, depot)
+    runs = route_segments({sids[i]: n for i, n in pickups.items()}, {sids[i]: n for i, n in drops.items()}, xy, depot)
     for r in runs:
         r["stops"] = [{"station": nm(s), "action": a, "bikes": k} for s, a, k in r["stops"]]
     return {"date": date, "strategy": strategy, "budget_per_night": budget, "moved_bikes": int(sum(drops.values())),
             "pickup_stations": len(pickups), "drop_stations": len(drops),
             "vulnerable_drop_stations": sum(1 for d in drop_list if d["vulnerable"]),
             "vulnerable_bikes": sum(d["bikes"] for d in drop_list if d["vulnerable"]),
-            "truck_runs": len(runs), "route_km": round(sum(r["km"] for r in runs), 1),
+            "route_segments": len(runs), "route_km": round(sum(r["km"] for r in runs), 1),
             "top_drops": drop_list[:8], "top_pickups": pick_list[:6],
-            "first_runs": runs[:3], "alpha": alpha, "beta": beta}
+            "first_segments": runs[:3], "alpha": alpha, "beta": beta}
 
 
-def truck_runs(pick: dict, drop: dict, xy: dict, depot: int) -> list[dict]:
+def route_segments(pick: dict, drop: dict, xy: dict, depot: int) -> list[dict]:
     """시뮬레이터 route_km과 같은 탐욕 규칙으로 정차 순서를 만들고, 적재가 0이 될 때마다 구간을 나눈다.
 
-    구간은 차고지 출발·복귀 운행회차가 아니라 한 연속 경로의 토막이다. km 합은 마지막 차고지 복귀 거리를 빼므로
-    route_km(복귀 포함)보다 작다."""
+    구간은 차고지 출발·복귀 운행회차가 아니라 한 연속 경로의 토막이다. 마지막 차고지 복귀 거리는 마지막 구간에 더해
+    km 합이 시뮬레이터 route_km(차고지 왕복 포함)과 같다."""
     pick, drop = dict(pick), dict(drop)
     pos, load, runs, cur = xy[depot], 0, [], {"stops": [], "km": 0.0}
     while pick or drop:
@@ -140,8 +140,10 @@ def truck_runs(pick: dict, drop: dict, xy: dict, depot: int) -> list[dict]:
             runs.append(cur)
             cur = {"stops": [], "km": 0.0}
     if cur["stops"]:
-        cur["km"] = round(cur["km"], 1)
         runs.append(cur)
+    if runs:
+        last = runs[-1]
+        last["km"] = round(last["km"] + float(np.hypot(*(xy[depot] - pos))), 1)
     return runs
 
 
@@ -160,9 +162,9 @@ SYSTEM = ("너는 창원 공영자전거 누비자 재배치 운영팀의 야간
           "주어진 배치표(JSON)의 숫자와 거점 이름만 사용한다. 계산하거나 새로운 숫자를 만들지 않는다. 한국어 개조식으로 쓴다.")
 TEMPLATE = """아래 배치표로 오늘 밤 재배치 차량 운전원과 관리자에게 보낼 브리핑을 작성하라.
 형식(마크다운, 700자 이내):
-1) 오늘 밤 요약 3줄: 옮길 자전거 대수, 수거·배치 거점 수, 차량 회차 수와 경로 거리
+1) 오늘 밤 요약 3줄: 옮길 자전거 대수, 수거·배치 거점 수, 경로 구간 수(적재가 빌 때마다 나눈 구간, 차량 운행회차 아님)와 차고지 복귀 포함 경로 거리
 2) 우선 배치 거점: 배치 대수가 많은 순으로 최대 5곳(거점명·대수, 취약 거점이면 '최소 보장' 표시)
-3) 1회차 경로: 정차 순서대로(거점명·수거/배치·대수)
+3) 첫 구간 경로: 정차 순서대로(거점명·수거/배치·대수)
 4) 확인 요청 1줄: 현장 재고가 배치표와 다르면 보고
 규칙: 배치표에 없는 숫자 금지(날짜와 목록 번호 제외), 배치표에 없는 거점명 금지, 추측·홍보 문구 금지.
 
@@ -206,7 +208,7 @@ def verify_draft(facts: dict, text: str, known_names: set[str]) -> list[str]:
     ok = allowed_numbers(facts)
     bad_nums = sorted({n for n in _numbers(text) if n not in ok})
     plan: dict[str, set[int]] = {}
-    for d in facts["top_drops"] + facts["top_pickups"] + [s for r in facts["first_runs"] for s in r["stops"]]:
+    for d in facts["top_drops"] + facts["top_pickups"] + [s for r in facts["first_segments"] for s in r["stops"]]:
         plan.setdefault(d["station"], set()).add(int(d["bikes"]))
     bad_names = sorted({nm for nm in known_names if len(nm) >= 3 and nm in text and nm not in plan})
     # 계획 거점명 위치(긴 이름 우선, 겹치면 짧은 쪽 제외: '창원시청' ⊂ '창원시청 후문 버스정류소')

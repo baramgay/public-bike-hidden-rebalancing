@@ -515,7 +515,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
       x + 4, 75.5, w - 7.5, 17.5, { lineSpacingMultiple: 1.15 });
   });
 
-  // 운영자 브리핑 화면(LangGraph 기록의 사실값으로 구성, 경로 지도는 1회차 계산 경로)
+  // 운영자 브리핑 화면(LangGraph 기록의 사실값으로 구성, 경로 지도는 첫 구간 계산 경로)
   const B = N.brief, BF = B.facts;
   // 휴대폰 틀(Sol 07, 1200×2600px, 틀 46~1155 × 101~2496px, 화면 구멍 104~1097 × 175~2424px): 흰 화면판을 깔고 틀을 올린다
   const PS = 56 / 1109, PX = 12 - 46 * PS, PY = 100 - 101 * PS;
@@ -528,7 +528,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const [yy, mo, dd] = BF.date.split("-").map(Number);
   T(s, `${yy}.${mo}.${dd} 02시 배치안 · 예산 ${int(BF.budget_per_night)}대`, 18.5, 112.9, 44, 4, { fontSize: 7.5, color: C.ink2 });
   const tiles = [[`${int(BF.moved_bikes)}`, "대", "옮길 자전거"], [`${BF.pickup_stations + BF.drop_stations}`, "곳", `수거 ${BF.pickup_stations}\n배치 ${BF.drop_stations}`],
-    [`${int(BF.route_km)}`, "km", `구간 ${BF.truck_runs}개\n(복귀 제외)`]];
+    [`${int(BF.route_km)}`, "km", `경로 구간\n${BF.route_segments}개`]];
   tiles.forEach(([v, u, l], i) => {
     const x = 16.5 + i * 16;
     box(s, x, 120, 15, 14.5, { fill: C.bg, r: 1.5 });
@@ -536,7 +536,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
       x, 121.1, 15, 4.5, { align: "center" });
     T(s, l, x, 126.1, 15, 8, { fontSize: 7.5, color: C.ink2, align: "center", lineSpacingMultiple: 1.05 });
   });
-  const run1 = BF.first_runs[0];
+  const run1 = BF.first_segments[0];
   T(s, `첫 구간 경로 ${fx(run1.km, 1)}km · 정차 ${run1.stops.length}곳`, 16.5, 136.5, 47, 4.5, { fontFace: F.semi, fontSize: 7.8, color: C.forest });
   box(s, 16.5, 141, 47, 28.6, { fill: C.map, r: 1.5 });
   img(s, FIG("brief_route"), 18.5, 142.25, 43, 26.1);

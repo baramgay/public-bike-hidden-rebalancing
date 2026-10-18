@@ -1,4 +1,4 @@
-"""운영자 브리핑 화면용 1회차 차량 경로 지도(2025-04-15 배치안, LangGraph 브리핑 기록의 first_runs[0]).
+"""운영자 브리핑 화면용 첫 구간 차량 경로 지도(2025-04-15 배치안, LangGraph 브리핑 기록의 first_segments[0]).
 
 글자는 축척 막대만 넣고, 범례·설명은 보고서에서 직접 쓴다. 주변 거점은 맥락용 회색 점.
 """
@@ -23,7 +23,7 @@ MAP_BG = "#EEF5F2"   # 보고서 화면 상자와 같은 색(build_deck.js의 �
 def main() -> int:
     S.setup()
     rec = json.loads(BRIEF.read_text(encoding="utf-8"))
-    run = rec["facts"]["first_runs"][0]
+    run = rec["facts"]["first_segments"][0]
     st = pd.read_csv(S.ROOT / "data" / "processed" / "bike_chains" / "stations.csv", encoding="utf-8-sig")
     st = st.sort_values("year").drop_duplicates("station_id", keep="last")
     by_name = st.drop_duplicates("name", keep="last").set_index("name")
