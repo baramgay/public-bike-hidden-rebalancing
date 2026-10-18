@@ -386,7 +386,7 @@
  {
   "group": "분석 도구·AI",
   "n": 49,
-  "text": "OpenAI. Codex(이미지 생성 포함). 공식자료 조사·검토 보조, 개념 그림 생성(모델 버전 비공개).",
+  "text": "OpenAI. Codex(사용 모델: GPT Sol 6.1). 공식자료 조사·검토 보조, 개념 그림·아이콘 생성.",
   "url": "https://openai.com/codex",
   "verified": true,
   "source_doc": "docs/codex_support/2026-10-17_AI이미지_활용공개안.md"
