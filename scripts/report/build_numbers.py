@@ -53,6 +53,7 @@ def main() -> int:
     d = d[d["service_date"].dt.year.isin([2023, 2024, 2025])]
     n["moved_per_day_by_year"] = {int(k): float(v) for k, v in d.groupby(d["service_date"].dt.year)["moved"].mean().items()}
     n["moved_per_day_3y"] = float(d.loc[d["moved"] > 0, "moved"].mean())
+    n["moved_days_3y"] = int((d["moved"] > 0).sum())
 
     b = pd.read_csv(P / "bike_chains" / "batch_sizes.csv")
     b24 = b[b["year"] == 2024]
