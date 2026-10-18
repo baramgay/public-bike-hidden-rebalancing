@@ -156,6 +156,9 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   T(s, `팀 ${TEAM}`, 21, 260, 168, 7, { fontFace: F.semi, fontSize: 13, color: C.forest });
   T(s, `공개 공공데이터 ${DS.rows.length}종 · 이용기록 ${int(N.valid_rows / 1e4)}만 건 · 2023~2025년`, 21, 268.5, 168, 5.5,
     { fontSize: 10.5, color: C.ink2 });
+  // 공식 양식 1쪽 머리의 두 CI(원본 추출, design/form_ci/README.md). 하늘 배경에서는 숲과나눔 로고가 흐려 흰 상자 안에 둠
+  fitImg(s, "design/form_ci/hankyoreh.png", 130, 263.5, 22, 6, "right");
+  fitImg(s, "design/form_ci/supgwananum.png", 156, 262.5, 33, 8, "right");
 }
 
 // =====================================================================
@@ -227,7 +230,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   box(s, 12, 231.5, 186, 16, { fill: C.white, line: C.light });
   T(s, "참여 동기", 16, 234.2, 20, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });
   T(s, "누비자 이용기록을 자전거 번호로 이어 보다가 사람이 타지 않은 이동이 **하루 1,600건 이상**임을 발견함. 운영사 탄소 감축량에는 이 이동의 차량 배출이 빠져 있음. " +
-    "부담이 **어느 거점에 몰리는지** 확인하고, AI로 이동을 줄이면서 **언덕 위·외곽 거점의 아침 대여를 지킬 수 있는지** 시험하고자 함",
+    "부담이 **어느 거점에 몰리는지** 확인하고, AI로 이동을 줄이면서 **접근이 불리한 거점의 대여를 지킬 수 있는지** 시험하고자 함",
   36, 234.2, 158, 12, { fontSize: 8.4, lineSpacingMultiple: 1.17 });
 
   sub(s, "분석 목적", 12, 250.5);
@@ -295,9 +298,9 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const steps = [
     ["data_t", "수집·정제", "3년 이용 1,307만 건 DuckDB 결합. 오류·중복 제거, 2025년 7월 결측은 0으로 채우지 않고 제외", "검사: 이용 − 자전거 수 = 연속쌍 수", "①②"],
     ["trace_t", "자전거 연쇄 추적", "같은 번호의 반납 거점 ≠ 다음 대여 거점이면 기록 없는 이동. 간격·속도(시속 60km)·운영센터 규칙으로 8유형 분류", `핵심 이동 ${int(N.moved_3y)}건`, "①②⑭"],
-    ["hill_t", "지형·생활 접근성", "30m 고도 자료로 오르막 판정. 반경 300m 버스 운행, 의료·약국·시장 거리 하위 25%를 취약 거점으로 지정", `취약 ${N.vuln_count}곳(복합 ${N.vuln_both_count}곳)`, "③~⑧"],
+    ["hill_t", "지형·생활 접근성", "30m 고도로 오르막 판정. 반경 300m 버스 운행 하위 25%, 또는 의료·약국·시장 중 2종 이상 거리 상위 25%면 취약 거점", `취약 ${N.vuln_count}곳(복합 ${N.vuln_both_count}곳)`, "③~⑧"],
     ["weather_t", "AI 수요 예측", "거점·날짜별 아침 필요 대수 예측. 경사 부스팅(포아송 손실), 과거 이력·요일·공휴일·전날 날씨·고도 입력", "학습→검증→시험 시간순 분리", "①⑨⑩"],
-    ["truck_t", "배치 실험·탄소", "2025년 상반기 실제 대여를 순서대로 재생, 재고 0이면 실패 처리. 같은 밤당 이동 예산으로 전략 비교, 주행 km를 탄소로 환산", "시험 전 설계·코드 고정", "①⑫⑬"],
+    ["truck_t", "배치 실험·탄소", "2025년 상반기 실제 대여를 순서대로 재생, 재고 0이면 실패 처리. 같은 밤당 이동 예산으로 전략 비교, 주행 km를 탄소로 환산", "전략·지표는 시험 전 고정", "①⑫⑬"],
   ];
   steps.forEach(([ic, t, d, outp, data], i) => {
     const x = 12 + i * 37.6, w = 35.6;
@@ -337,7 +340,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const guards = [
     ["보존 검사", "이용 − 자전거 수 = 연속쌍 수, 매 실행 확인"],
     ["시간순 분리", "2023.2~2024.9 학습, 2024년 4분기 검증, 2025년 상반기 시험"],
-    ["사전 고정", "시험 전 전략·지표·코드 해시 고정, 수정 시 새 잠금 기록"],
+    ["사전 고정", "전략·지표 시험 전 고정. 이후 찾은 엔진 오류 2건은 수정 뒤 같은 절차로 재평가"],
     ["두 AI 교차 분류", "다른 모델이 표본을 독립 재분류해 일치도(κ) 측정"],
     ["통계 검정", "날짜·거점 부트스트랩 95% 신뢰구간, Wilcoxon 부호순위, 가중 회귀(HC1)"],
   ];
@@ -381,7 +384,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   img(s, FIG("hourly_moved_share"), 12, 150, 101.3, 40.3);
   box(s, 12, 192, 101, 13, { fill: C.pale, r: 1.5 });
   T(s, [{ text: `오전 8시 대여의 ${pct(N.moved_share_8am)}`, options: { fontFace: F.semi, color: C.forest } },
-        { text: "가 밤사이 옮겨진 자전거로 시작됨. 아침 시간대 수요를 재배치가 뒷받침(2023~2025 합계, 다음 대여 시각 기준)" }],
+        { text: "가 기록 없이 옮겨진 자전거로 시작됨. 아침 시간대 수요를 재배치가 뒷받침(2023~2025 합계, 다음 대여 시각 기준)" }],
   15, 192, 96, 13, { fontSize: 8.4, valign: "middle", lineSpacingMultiple: 1.15 });
   figHead(s, "구 간 기록 없는 이동(출발 → 도착)", 120, 144.5, 78);
   img(s, FIG("district_matrix"), 120, 150, 69, 62.4);
@@ -421,7 +424,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     `2025년 1~6월 실제 대여 ${int(testDemand)}건을 시간순으로 재생`,
     "거치대에 자전거가 없으면 해당 대여는 ‘실패’로 기록",
     "매일 02시, 전략별로 같은 ‘밤당 이동 예산’ 안에서 재배치",
-    "설정은 2024년 4분기(검증)로만 선택, 시험 결과는 사전 고정 후 공개",
+    "설정은 2024년 4분기(검증)로만 선택. 시험 뒤 찾은 엔진 오류 2건은 고친 후 같은 절차로 재평가",
   ], 74, 38.5, 56, 38, { size: 8, gap: 1.4 });
   img(s, FIG("forecast_mae"), 136, 30, 62, 45.5);
   cap(s, fig(`필요 대수 예측 오차(시험기간). AI는 규칙 대비 ${fx(MAE.groups["전체"].reduction_vs_rule_pct.ai, 1)}%, 날씨까지 알면 ${fx(MAE.groups["전체"].reduction_vs_rule_pct.ai_weather, 1)}% 감소`), 136, 76.3, 62, 10);
@@ -434,7 +437,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     120, 139.5, 78, 12, { fontSize: 8.2, lineSpacingMultiple: 1.17 });
 
   img(s, FIG("equity"), 12, 160, 84.6, 51.6);
-  cap(s, fig(`취약 거점 형평 비교(예산 1,500대/밤, 취약 거점 ${EQ.group_stations}곳). 빈 시간 = 05~24시 중 재고 0인 시간(거점·일 평균)`), 12, 212, 85, 7);
+  cap(s, fig(`취약 거점 형평 비교(1,500대/밤). 성공률은 취약 분류 ${EQ.group_stations}곳, 빈 시간(05~24시 재고 0인 시간)은 기간 내내 운영된 ${ST.equity_station.vulnerable.empty_hours_per_station_day.n}곳 평균`), 12, 212, 85, 7);
   const k = [
     [`${int(saveAI)}`, "대 감축", `같은 성공률(${pct(ES.target_served_rate)})에 필요한 밤당 이동: AI 예측 vs 경험 규칙(−${pct(saveAI / ES.rule4w.moves_per_night)})`],
     [sgn(PF.gain_at_budget_1500_pp.ai, 2), "%p", "같은 예산(1,500대/밤)의 대여 성공률: AI 예측 vs 경험 규칙"],
@@ -452,7 +455,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     `AI 예측은 같은 서비스 수준에서 밤당 차량 주행을 약 ${fx(kmSaveAI, 0)}km 감축 → 연 ${fx(yr(kmSaveAI, co2.diesel_low), 1)}~${fx(yr(kmSaveAI, co2.diesel_high), 1)}t CO2(1톤 경유 화물차 기준). **예측만으로 줄어드는 탄소는 제한적**`,
     `**큰 차이는 차종에서 발생**: 2024년 경로 추정 연 ${fx(N.truck_km_year_2024_cap20 / 1e4, 1)}만 km는 경유 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t, 전기 화물차 전환 시 **${fx(N.observed_co2_t_2024.ev, 0)}t(약 절반)**`,
     "운영사 감축량 산식은 승용차 대체 100%를 가정하고 재배치 배출을 미차감. 대체율이 해외 사례처럼 낮으면(2~21%) 재배치 배출 비중 확대 → **‘순감축’ 회계 필요**",
-    `**AI 효과는 탄소보다 서비스·형평에서 뚜렷함**: 같은 예산으로 반년 대여 약 ${int(testDemand * PF.gain_at_budget_1500_pp.ai / 100)}건 추가 성공, 보장 추가 시 취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소`,
+    `**AI 효과는 탄소보다 서비스·형평에서 뚜렷함**: 같은 예산으로 반년 대여 ${int(sim("ai", 1500).served - sim("rule4w", 1500).served)}건 추가 성공, 보장 추가 시 취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소`,
   ], 16, 229.5, 121, 33, { size: 8, gap: 1.3 });
   // 통계적 확인(95% 신뢰구간, scripts/analysis/stat_tests.py)
   const fc = ST.forecast.ai_vs_rule4w, ar = ST.ai_vs_rule_station.all.success_rate.pooled;
@@ -485,13 +488,13 @@ const yr = (km, f) => (km * 365 * f) / 1000;
 {
   const s = page(5);
   pill(s, "정책제안 및 기대효과", 12, 12.5, 35);
-  head(s, "숨은 이동 지표 공개, 예측 기반 야간 배치, 취약 거점 아침 2대 보장", 20.5);
+  head(s, "숨은 이동 지표 공개, 예측 기반 야간 배치, 취약 거점 최소 2대 보장", 20.5);
   const pol = [
     ["trace_t", "① 숨은 이동 지표 공개", "기록 없는 이동 비율·거점별 의존도·재배치 km를 운영 성과 지표로 매월 공개", "전국 공공자전거 운영기관",
       "재배치 부담이 큰 지역을 매월 점검, 탄소 ‘순감축’ 산정 자료로 사용"],
     ["ai_t", "② AI 예측 야간 배치", "거점별 내일 아침 필요 대수를 예측해 기상 예보와 연동, 운영자 승인 후 배차", "운영기관 배차 담당",
-      `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대(${pct(saveAI / ES.rule4w.moves_per_night)}) 감축, 예보 연동 시 최대 ${int(saveAIw)}대 감축`],
-    ["equity_t", "③ 취약 거점 아침 2대", `버스·생활시설 접근이 약한 ${N.vuln_count}곳에 매일 아침 최소 2대 보장`, "지자체(형평 목표)·운영기관",
+      `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대(${pct(saveAI / ES.rule4w.moves_per_night)}) 감축. 당일 날씨를 안다고 가정한 상한은 ${int(saveAIw)}대`],
+    ["equity_t", "③ 취약 거점 최소 2대", "버스·생활시설 접근이 약한 거점(최근 28일 이용)에 매일 야간 배치 때 최소 2대 우선 확보", "지자체(형평 목표)·운영기관",
       `취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소, 전체 대여 성공률은 ${fx(Math.abs(EQ.overall_cost_ai_fair_minus_ai_pp), 3)}%p 하락에 그침`],
     ["evtruck_t", "④ 재배치 차량 전기화", "1톤 경유 화물차를 전기 화물차로 교체하고 감축량에서 운영 배출 차감", "지자체 탄소중립 계획",
       `재배치 배출 연 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t → ${fx(N.observed_co2_t_2024.ev, 0)}t`],
@@ -547,7 +550,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     box(s, 20, y + 3.7, 43.5 * d.bikes / bmax, 1.2, { fill: d.vulnerable ? C.accent : C.gray, r: 0 });
   });
   box(s, 16.5, 210.5, 47, 5, { fill: C.pale, r: 1.5 });
-  T(s, `자동 검증 오류 ${B.final_errors.length}건 · 수정 ${B.revisions}회 · ${B.approved ? "승인 완료" : "승인 대기"}`, 16.5, 210.5, 47, 5,
+  T(s, `자동 검사 오류 ${B.final_errors.length}건 · 수정 ${B.revisions}회 · ${B.approved ? "시연 승인" : "승인 대기"}`, 16.5, 210.5, 47, 5,
     { fontFace: F.semi, fontSize: 7.5, color: C.forest, align: "center", valign: "middle" });
   cap(s, fig("운영자 브리핑 화면 예시\n(2025.4.15 배치안, 시험기간 재현)"), 12, 222.3, 56, 7);
 
@@ -555,14 +558,14 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   iconFit(s, "council_t", 158, 100, 12, 11);
   T(s, "시의회는 무엇을 말해 왔나", 158, 112, 40, 5, { fontFace: F.semi, fontSize: 8.8, color: C.forest });
   T(s, `2020~2026년 누비자 관련 발언 ${CO.relevant}건 AI 분류. 재정(${pct(CO.share_of_relevant["재정"], 0)})·이용(${pct(CO.share_of_relevant["이용"], 0)}) 쟁점이 중심이고 ` +
-    `**재배치 ${pct(CO.share_of_relevant["재배치"], 0)}·형평 ${pct(CO.share_of_relevant["형평"], 0)}로 소수**. 보이지 않는 운영 부담은 **의회 논의에서도 드러나지 않음**`,
+    `**재배치 ${pct(CO.share_of_relevant["재배치"], 0)}·형평 ${pct(CO.share_of_relevant["형평"], 0)}로 소수**. 재배치 같은 운영 부담은 **의회 논의에서도 비중이 작음**`,
   158, 118, 40, 28, { fontSize: 8, lineSpacingMultiple: 1.17 });
   cap(s, fig(`시의회 쟁점 비중(관련 발언 대비, 발언당 최대 2개). 두 모델 일치: 관련성 ${pct(CO.relevant_agreement, 0)}, 주제 ${pct(CO.primary_code_agreement, 0)}`), 72, 147, 126);
 
   sub(s, "기대효과와 파급효과", 72, 153);
   const effects = [
     ["운영", `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대·주행 약 ${fx(kmSaveAI, 0)}km 감축, 인력·연료비 절감 여지`],
-    ["형평", `언덕 위·외곽 거점의 아침 빈 거치대 감소(취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소)`],
+    ["형평", `버스·생활시설 접근이 약한 거점의 빈 거치대 시간 ${fx(vulnGain, 0)}% 감소(05~24시 기준)`],
     ["환경", "재배치 배출을 포함한 ‘순감축’ 회계, 전기 화물차 전환으로 재배치 배출 절반 감축"],
     ["전국 확산", "자전거 번호가 담긴 이용기록 공개만으로 다른 도시에 같은 코드 적용 가능. 공공데이터 개방 기준에 ‘자전거 번호’ 포함 권고"],
   ];
@@ -583,7 +586,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     T(s, t, x + 1, 210.5, 26, 8.5, { fontFace: F.semi, fontSize: 7.6, color: i === 3 ? C.white : C.forest, align: "center", valign: "middle", lineSpacingMultiple: 1.05 });
     if (i < 3) T(s, "→", x + 28, 210.5, 4.5, 8.5, { fontSize: 9, color: C.teal, align: "center", valign: "middle" });
   });
-  T(s, "배치표에 없는 숫자·거점명이 나오면 자동 차단 후 재작성, 최종 배차는 운영자 승인으로만 실행", 72, 220.8, 126, 4.5, { fontSize: 7.8, color: C.ink2 });
+  T(s, "배치표에 없는 숫자, 계획 밖 거점명, 계획과 다른 거점별 대수가 나오면 자동 차단 후 재작성. 최종 배차는 운영자 승인 후 실행(이 사례는 분석자 시연 승인)", 72, 220.6, 126, 8, { fontSize: 7.8, color: C.ink2, lineSpacingMultiple: 1.12 });
 
   box(s, 12, 234, 186, 25.5, { fill: C.white, line: C.light });
   T(s, "한계와 다음 단계", 16, 236.6, 40, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });

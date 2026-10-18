@@ -3,7 +3,8 @@
 LangGraph 상태 그래프(체크포인터·thread_id·interrupt 사용)
   facts(결정론) → draft(LLM) → verify(결정론) ─실패·재시도<3→ revise(LLM) → verify
                                               └통과 또는 재시도 소진→ human_review(interrupt) → save
-- 숫자는 코드가 만든 배치표(facts)에만 있고, LLM은 문장만 쓴다. 배치표에 없는 숫자·거점명이 나오면 검증 실패
+- 숫자는 코드가 만든 배치표(facts)에만 있고, LLM은 문장만 쓴다. 배치표에 없는 숫자·계획 밖 거점명, 거점 뒤 대수가 계획과 다를 때,
+  대장·계획에 없는 낱말 뒤 'N대'(가짜 거점 의심)가 나오면 검증 실패(verify_draft)
 - 실행: python scripts/ai/dispatch_brief.py --date 2025-04-15 [--auto-approve]
   --auto-approve 없이 실행하면 검토 단계에서 멈추고, 같은 thread로 승인/수정 입력을 받는다
 """
@@ -190,15 +191,51 @@ def node_draft(state: BriefState) -> BriefState:
     return {"draft": r["text"], "revisions": 0, "log": state.get("log", []) + [{"step": "draft", "model": r["model"], "cost_usd": r["cost_usd"]}]}
 
 
-def node_verify(state: BriefState) -> BriefState:
-    facts, text = state["facts"], state["draft"]
+# 'N대' 앞에 와도 거점명이 아닌 일반어(저장 초안 기준, 오탐 시 여기에 추가)
+GENERIC_BEFORE_COUNT = {"자전거", "차량", "총", "합계", "수거", "배치", "약", "최소", "최대", "보장", "각", "모두",
+                        "전체", "추가", "남은", "재고", "대수", "옮길", "옮길자전거"}
+WINDOW = 20   # 거점명 뒤 'N대'를 찾는 글자 수(같은 줄·다음 거점명·→ 전까지)
+
+
+def verify_draft(facts: dict, text: str, known_names: set[str]) -> list[str]:
+    """초안 검증(결정론): ① 배치표에 없는 숫자 ② 계획 밖 기존 거점명 ③ 계획 거점 뒤 'N대'가 계획 대수와 다름
+    ④ 계획 거점명·일반어가 아닌 낱말 뒤 'N대'(존재하지 않는 거점 의심)."""
     ok = allowed_numbers(facts)
     bad_nums = sorted({n for n in _numbers(text) if n not in ok})
+    plan: dict[str, set[int]] = {}
+    for d in facts["top_drops"] + facts["top_pickups"] + [s for r in facts["first_runs"] for s in r["stops"]]:
+        plan.setdefault(d["station"], set()).add(int(d["bikes"]))
+    bad_names = sorted({nm for nm in known_names if len(nm) >= 3 and nm in text and nm not in plan})
+    # 계획 거점명 위치(긴 이름 우선, 겹치면 짧은 쪽 제외: '창원시청' ⊂ '창원시청 후문 버스정류소')
+    spans: list[tuple[int, int, str]] = []
+    for nm in sorted(plan, key=len, reverse=True):
+        for m in re.finditer(re.escape(nm), text):
+            if all(m.end() <= a or m.start() >= b for a, b, _ in spans):
+                spans.append((m.start(), m.end(), nm))
+    spans.sort()
+    mismatch = []
+    for i, (_, end, nm) in enumerate(spans):
+        stop = min(end + WINDOW, spans[i + 1][0]) if i + 1 < len(spans) else end + WINDOW
+        win = re.split(r"[\n→]", text[end:stop])[0]
+        m = re.search(r"(\d[\d,]*)\s*대", win)
+        if m and int(m.group(1).replace(",", "")) not in plan[nm]:
+            want = "·".join(str(v) for v in sorted(plan[nm]))
+            mismatch.append(f"거점-대수 불일치: {nm} {m.group(1)}대(계획 {want}대)")
+    covered = {end + m.start(1) for _, end, _ in spans
+               for m in [re.search(r"(\d[\d,]*)\s*대", re.split(r"[\n→]", text[end:end + WINDOW])[0])] if m}
+    unknown = []
+    for m in re.finditer(r"(\S*[^\d\s,])\s*(\d[\d,]*)\s*대", text):    # 낱말 끝은 숫자가 아니게(붙여 쓴 'N대'도 숫자 전체를 잡음)
+        word = m.group(1).strip("*-:.,()[]#")
+        if m.start(2) in covered or not word or not re.search(r"[가-힣A-Za-z]", word) or word in GENERIC_BEFORE_COUNT:
+            continue
+        unknown.append(f"계획에 없는 거점 의심: {word} {m.group(2)}대")
+    return ([f"배치표에 없는 숫자: {n}" for n in bad_nums] + [f"배치표에 없는 거점: {n}" for n in bad_names]
+            + mismatch + unknown)
+
+
+def node_verify(state: BriefState) -> BriefState:
     names = set(pd.read_csv(R.CHAINS / "stations.csv")["name"].astype(str))
-    in_plan = {d["station"] for d in facts["top_drops"] + facts["top_pickups"]} | \
-        {s["station"] for r in facts["first_runs"] for s in r["stops"]}
-    bad_names = sorted({nm for nm in names if len(nm) >= 3 and nm in text and nm not in in_plan})
-    errors = [f"배치표에 없는 숫자: {n}" for n in bad_nums] + [f"배치표에 없는 거점: {n}" for n in bad_names]
+    errors = verify_draft(state["facts"], state["draft"], names)
     return {"errors": errors, "log": state["log"] + [{"step": "verify", "errors": errors}]}
 
 
