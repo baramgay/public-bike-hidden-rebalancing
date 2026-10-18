@@ -16,7 +16,7 @@ def main() -> int:
     pdf = pptx.with_suffix(".pdf")
     r = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
                         str(ROOT / "scripts" / "report" / "export_pdf.ps1"), str(pptx), str(pdf)],
-                       capture_output=True, text=True, timeout=300)
+                       capture_output=True, text=True, encoding="cp949", errors="replace", timeout=300)   # PowerShell 출력은 cp949
     if r.returncode != 0:
         print(r.stdout, r.stderr)
         return r.returncode

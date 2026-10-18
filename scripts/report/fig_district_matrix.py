@@ -66,7 +66,7 @@ def main() -> int:
     ax.text(1.5, GY1 - 2.5 * ch, "출발 구", ha="center", va="center", fontsize=S.FS_SMALL, color=S.INK,
             fontweight="bold", rotation=90)
     ax.text(0, 5.3, f"테두리 칸 = 같은 구 안 이동, 합계 {diag_pct:.1f}%", ha="left", va="bottom", fontsize=7.5, color=S.INK2)
-    ax.text(0, 1.0, f"{YEAR}년 · 칸 값은 전체 대비 %", ha="left", va="bottom", fontsize=7.5, color=S.INK2)
+    ax.text(0, 1.0, f"{YEAR}년 · 칸 값은 전체 대비 % · 색 농도는 제곱근 척도", ha="left", va="bottom", fontsize=7.5, color=S.INK2)
 
     out = {"year": YEAR, "order": DISTRICTS, "total_n": total, "excluded_unmapped_n": excluded,
            "n": mat.values.tolist(), "pct_of_total": np.round(pct, 3).tolist(),

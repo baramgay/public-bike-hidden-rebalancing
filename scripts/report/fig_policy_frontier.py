@@ -121,8 +121,9 @@ def main() -> int:
         ins.annotate("", xy=(m_ai, target * 100), xytext=(float(rule["moves_per_night"]), target * 100),
                      arrowprops=dict(arrowstyle="-|>", color=S.FOREST, lw=0.9, shrinkA=0, shrinkB=0, mutation_scale=6), zorder=6)
         sv = out["same_success"]["ai"]
-        ins.text(X0 + 15, Y1 - 0.25, f"AI: 같은 성공률({target*100:.1f}%)에\n이동 {abs(sv['saving_moves']):.0f}대({abs(sv['saving_pct']):.1f}%) 절감",
-                 fontsize=7.5, color=S.FOREST, va="top", ha="left", linespacing=1.15)
+        # 설명은 확대 창 밖 빈 영역(곡선 아래)에 두어 확대 창의 선과 겹치지 않게 한다
+        ax.text(0.385, 0.25, f"같은 성공률({target*100:.1f}%)에서\nAI 예측은 밤당 이동\n{abs(sv['saving_moves']):.0f}대({abs(sv['saving_pct']):.1f}%) 절감",
+                transform=ax.transAxes, fontsize=7.5, color=S.FOREST, va="center", ha="right", linespacing=1.2)
     ins.text(X1 - 10, Y0 + 0.2, "점: 예산 1,500", fontsize=7.5, color=S.INK2, va="bottom", ha="right")
     ins.set_xticks([1200, 1400, 1600])
     ins.set_xticklabels(["1,200", "1,400", "1,600"], fontsize=7.5)

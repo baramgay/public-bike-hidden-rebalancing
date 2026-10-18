@@ -65,7 +65,7 @@ def main() -> int:
     cost = (float(rows["ai_fair"]["served_rate"]) - float(rows["ai"]["served_rate"])) * 100
     red = (zh["ai_fair"] / zh["ai"] - 1) * 100
     fig.text(0.0, 0.0, (f"빈 시간 {red:.0f}%: AI 예측 대비\n"
-                        f"전체 대여 성공률 변화(AI+취약 보장 − AI 예측): {cost:+.2f}%p").replace("-", "−"),
+                        f"전체 대여 성공률 변화(AI+취약 보장 − AI 예측): {cost:+.3f}%p").replace("-", "−"),
              fontsize=7.5, color=S.INK2, va="bottom", ha="left", linespacing=1.3)
 
     out = {"source_file": src, "split": "test", "budget": BUDGET, "group": G, "group_stations": n_g,
