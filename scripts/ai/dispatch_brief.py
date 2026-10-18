@@ -111,7 +111,10 @@ def night_plan(date: str, strategy: str = "ai_fair", budget: int = 1500) -> dict
 
 
 def truck_runs(pick: dict, drop: dict, xy: dict, depot: int) -> list[dict]:
-    """시뮬레이터 route_km과 같은 탐욕 규칙으로 회차(적재 0으로 돌아오는 단위)별 정차 순서를 만든다."""
+    """시뮬레이터 route_km과 같은 탐욕 규칙으로 정차 순서를 만들고, 적재가 0이 될 때마다 구간을 나눈다.
+
+    구간은 차고지 출발·복귀 운행회차가 아니라 한 연속 경로의 토막이다. km 합은 마지막 차고지 복귀 거리를 빼므로
+    route_km(복귀 포함)보다 작다."""
     pick, drop = dict(pick), dict(drop)
     pos, load, runs, cur = xy[depot], 0, [], {"stops": [], "km": 0.0}
     while pick or drop:

@@ -302,7 +302,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     ["data_t", "수집·정제", "3년 이용 1,307만 건 DuckDB 결합. 오류 정제·중복 점검, 2025년 7월 결측은 0으로 채우지 않고 제외", "검사: 이용 − 자전거 수 = 연속쌍 수", "①②"],
     ["trace_t", "자전거 연쇄 추적", "같은 번호의 반납 거점 ≠ 다음 대여 거점이면 기록 없는 이동. 운영센터 경유·5분 미만·시속 60km 초과·좌표 없는 거점(0.4%)은 핵심에서 제외", `핵심 이동 ${int(N.moved_3y)}건\n하루 평균 ${int(N.moved_per_day_3y)}건(${int(N.moved_days_3y)}일)`, "①②⑭"],
     ["hill_t", "지형·생활 접근성", "30m 고도로 오르막 판정. 반경 300m 버스 운행 하위 25%, 또는 의료·약국·시장 중 2종 이상 거리 상위 25%면 취약 거점", `취약 ${N.vuln_count}곳(복합 ${N.vuln_both_count}곳)`, "③~⑧"],
-    ["weather_t", "AI 수요 예측", "거점·날짜별 필요 대수(02시부터 그날 대여가 반납을 가장 많이 앞선 대수)를 경사 부스팅으로 예측. 이력·요일·날씨·고도 등 입력", "학습→검증→시험 시간순 분리", "①⑨⑩"],
+    ["weather_t", "AI 수요 예측", "거점·날짜별 필요 대수(시간별 대여·반납으로 산정한 02시 시작 재고, 4쪽)를 경사 부스팅으로 예측. 이력·요일·날씨·고도 등 입력", "학습→검증→시험 시간순 분리", "①⑨⑩"],
     ["truck_t", "배치 실험·탄소", "2025년 상반기 실제 대여를 순서대로 재생, 재고 0이면 실패 처리. 같은 밤당 이동 예산으로 전략 비교, 주행 km를 탄소로 환산", "전략·지표는 시험 전 고정", "①⑫⑬"],
   ];
   steps.forEach(([ic, t, d, outp, data], i) => {
@@ -424,9 +424,9 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   box(s, 71, 30, 61, 54, { fill: C.bg });
   T(s, "실험 방법: 기록을 다시 재생하는 가상 운영", 74, 32.3, 57, 5, { fontFace: F.semi, fontSize: 8.6, color: C.forest });
   bullets(s, [
-    `2025년 1~6월 실제 대여 ${int(testDemand)}건을 시간순 재생`,
+    `2025년 1~6월 실제 대여 ${int(testDemand)}건 시간순 재생`,
     "거치대가 비면 해당 대여는 ‘실패’로 기록",
-    "매일 02시, 같은 ‘밤당 이동 예산’ 안에서 거점별 **필요 대수**(02시부터 그날 대여가 반납을 가장 많이 앞선 대수) 추정치에 맞춰 재배치",
+    "매일 02시, 같은 ‘밤당 이동 예산’ 안에서 거점별 **필요 대수** 추정치에 맞춰 재배치. 필요 대수는 02~24시 대여·반납을 시간별로 집계하고 같은 시간대는 대여를 먼저 처리해 산정한 시작 재고",
     "추정: **경험 규칙**은 최근 4주 같은 요일 기록 평균, **AI**는 전날까지 자료로 예측",
     "설정은 2024년 4분기(검증)로만 선택, 시험 뒤 고친 엔진 오류 2건도 같은 절차로 재평가",
   ], 74, 38.5, 56, 45, { size: 8, gap: 1.4 });
@@ -528,7 +528,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const [yy, mo, dd] = BF.date.split("-").map(Number);
   T(s, `${yy}.${mo}.${dd} 02시 배치안 · 예산 ${int(BF.budget_per_night)}대`, 18.5, 112.9, 44, 4, { fontSize: 7.5, color: C.ink2 });
   const tiles = [[`${int(BF.moved_bikes)}`, "대", "옮길 자전거"], [`${BF.pickup_stations + BF.drop_stations}`, "곳", `수거 ${BF.pickup_stations}\n배치 ${BF.drop_stations}`],
-    [`${int(BF.route_km)}`, "km", `차량 ${BF.truck_runs}회\n운행 경로`]];
+    [`${int(BF.route_km)}`, "km", `구간 ${BF.truck_runs}개\n(복귀 제외)`]];
   tiles.forEach(([v, u, l], i) => {
     const x = 16.5 + i * 16;
     box(s, x, 120, 15, 14.5, { fill: C.bg, r: 1.5 });
@@ -537,7 +537,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     T(s, l, x, 126.1, 15, 8, { fontSize: 7.5, color: C.ink2, align: "center", lineSpacingMultiple: 1.05 });
   });
   const run1 = BF.first_runs[0];
-  T(s, `1회차 경로 ${fx(run1.km, 1)}km · 정차 ${run1.stops.length}곳`, 16.5, 136.5, 47, 4.5, { fontFace: F.semi, fontSize: 7.8, color: C.forest });
+  T(s, `첫 구간 경로 ${fx(run1.km, 1)}km · 정차 ${run1.stops.length}곳`, 16.5, 136.5, 47, 4.5, { fontFace: F.semi, fontSize: 7.8, color: C.forest });
   box(s, 16.5, 141, 47, 28.6, { fill: C.map, r: 1.5 });
   img(s, FIG("brief_route"), 18.5, 142.25, 43, 26.1);
   T(s, [{ text: "○", options: { color: C.gray, fontFace: F.semi } }, { text: " 수거   " }, { text: "●", options: { color: C.accent } },
@@ -592,19 +592,20 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   });
   T(s, "배치표에 없는 숫자, 계획 밖 거점명, 계획과 다른 거점별 대수가 나오면 자동 차단 후 재작성. 최종 배차는 운영자 승인 후 실행(이 사례는 분석자 시연 승인)", 72, 220.6, 126, 8, { fontSize: 7.8, color: C.ink2, lineSpacingMultiple: 1.12 });
 
-  box(s, 12, 234, 186, 25.5, { fill: C.white, line: C.light });
+  box(s, 12, 234, 186, 29.5, { fill: C.white, line: C.light });
   T(s, "한계와 다음 단계", 16, 236.6, 40, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });
   bullets(s, [
     "이동의 실제 주체·시각은 기록에 없어 **‘추정 이동’으로 한정**. 운영기관 배차 기록과 대조 시 정확도 확인 가능",
     "실험은 관측된 대여를 재생하므로 **자전거가 없어 포기한 수요는 미반영**. 초기 재고는 관측 기록으로 재구성한 공통 조건",
+    "실험은 거치대 용량·차량 대수·운행 및 상하차 시간을 반영하지 않고 매일 02시에 재배치가 끝나는 것으로 처리한 **전략 간 비교**",
     "생활 접근성은 2024.12~2026.10 시점 자료 기반 **정적 분류**. 실제 운영 시 날씨 입력은 **전날 발표 기상 예보로 대체** 필요",
-  ], 16, 242.5, 178, 16, { size: 8, gap: 1.4 });
+  ], 16, 242.5, 178, 20, { size: 8, gap: 1.4 });
 
-  box(s, 12, 263.5, 186, 19.5, { fill: C.bg });
-  T(s, "분석 도구 및 코드", 16, 265.8, 40, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });
-  T(s, "Python(pandas·DuckDB·NumPy·scikit-learn·matplotlib), LangGraph, Claude Code, PptxGenJS", 16, 271.5, 178, 4.5, { fontSize: 8 });
+  box(s, 12, 267.5, 186, 19.5, { fill: C.bg });
+  T(s, "분석 도구 및 코드", 16, 269.8, 40, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });
+  T(s, "Python(pandas·DuckDB·NumPy·scikit-learn·matplotlib), LangGraph, Claude Code, PptxGenJS", 16, 275.5, 178, 4.5, { fontSize: 8 });
   T(s, [{ text: "전체 코드·재현 순서: ", options: { fontFace: F.semi, color: C.forest } },
-        { text: CODE_URL, options: { color: C.teal, hyperlink: { url: CODE_URL } } }], 16, 276.8, 178, 4.5, { fontSize: 8.2 });
+        { text: CODE_URL, options: { color: C.teal, hyperlink: { url: CODE_URL } } }], 16, 280.8, 178, 4.5, { fontSize: 8.2 });
 }
 
 // =====================================================================
