@@ -63,7 +63,7 @@ def main() -> int:
     ax.set_xticks([])
     ax.spines[["left", "bottom"]].set_visible(False)
     ax.tick_params(axis="y", length=0, pad=3)
-    ax.set_title("관측 대여 성공률(%)", fontsize=S.FS_SMALL, loc="left", color=S.INK2, pad=4, x=-0.25)
+    ax.set_title("가상 운영 대여 성공률(%)", fontsize=S.FS_SMALL, loc="left", color=S.INK2, pad=4, x=-0.25)
     (S.FIG_DIR / "notruck.json").write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(out, ensure_ascii=False))
     print(S.save(fig, "notruck"))

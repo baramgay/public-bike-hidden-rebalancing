@@ -36,7 +36,7 @@ URL 사람 확인: `data/metadata/grokbot_url_final_check_20261018.md`(2026-10-1
 24. 창원시(2025). 창원시 2050 탄소중립 계획(누리집 2025.5.14 수정). https://www.changwon.go.kr/cwportal/depart/11065/14292/14294.web
 25. 창원레포츠파크(2025). 2025년 제3회 이사회 의결결과(2025.11.21 서면개최). https://www.lepopark.or.kr/post/open/files/382dd768-894c-4571-a1be-c671dd7876b4
 26. 워터저널(2024.3.27). [서울시] 전국 최초 공공자전거로 온실가스 배출권 확보. https://www.waterjournal.co.kr/news/articleView.html?idxno=74547
-27. 행정안전부(2025). 2025 행정안전통계연보(2024.12.31 기준), 4-2-6-2 공영자전거 운영 현황. https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000013&nttId=120079 ※확인 미완
+27. 행정안전부(2025). 2025 행정안전통계연보(2024.12.31 기준), 4-2-7-2 공영자전거 운영 현황. https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000013&nttId=120079
 28. 대전교통공사(2026). 대전시 공영자전거 타슈 대여이력 정보(기준일 20260331). 공공데이터포털. https://www.data.go.kr/data/15137219/fileData.do
 29. 경상남도 김해시(2025). 공공자전거 대여이력 정보(기준일 20251031). 공공데이터포털. https://www.data.go.kr/data/15104913/fileData.do
 
@@ -44,7 +44,7 @@ URL 사람 확인: `data/metadata/grokbot_url_final_check_20261018.md`(2026-10-1
 
 30. 경상남도 창원시(2023~2025). 공영자전거 누비자 대여 반납 이력. 공공데이터포털. https://www.data.go.kr/data/15126280/fileData.do
 31. 경상남도 창원시(2023~2025). 누비자 터미널 정보(기준일 2025.12.31). 공공데이터포털. https://www.data.go.kr/data/15000545/fileData.do
-32. 유럽연합·유럽우주국. Copernicus DEM GLO-30 Public(30m 수치표면모델, N35 E128 타일). AWS 오픈데이터 레지스트리. https://registry.opendata.aws/copernicus-dem/
+32. 유럽연합·유럽우주국. Copernicus DEM GLO-30 Public(30m 수치표면모델, N35 E128 타일). AWS 오픈데이터 레지스트리. 3쪽 지형 음영 고지: “produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved”. https://registry.opendata.aws/copernicus-dem/
 33. 국토교통부. 버스정류소정보(TAGO, 창원 2026.10.16 수집). 공공데이터포털. https://www.data.go.kr/data/15098534/openapi.do
 34. 국토교통부. 버스노선정보(TAGO, 노선목록·노선별 경유정류소, 2026.10.16 수집). 공공데이터포털. https://www.data.go.kr/data/15098529/openapi.do
 35. 경상남도 창원시(2025). 시내버스 운행시간표(기준일 2025.11.15). 공공데이터포털. https://www.data.go.kr/data/15152427/fileData.do

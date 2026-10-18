@@ -11,3 +11,8 @@ pyarrow==24.0.0
 scikit-learn==1.8.0
 scipy==1.17.1
 statsmodels>=0.14
+rasterio==1.5.0          # 고도 타일(trace_bike_chains.py)
+# 선택: 시의회 LLM 분류·배차 브리핑·시험
+anthropic==1.11.0
+langgraph==1.2.12
+pytest==9.0.3

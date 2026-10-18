@@ -39,6 +39,9 @@ scripts/archive/
 !/data/processed/forecast/q_metrics_segments.csv
 !/data/processed/forecast/q_model_lock.json
 !/data/processed/stats/
+!/data/processed/accessibility_scenarios/
+/data/processed/accessibility_scenarios/*
+!/data/processed/accessibility_scenarios/vulnerability_lock.json
 !/data/processed/bike_chains/
 /data/processed/bike_chains/*
 !/data/processed/bike_chains/yearly_summary.csv

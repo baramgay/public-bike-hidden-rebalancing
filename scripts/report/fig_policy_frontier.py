@@ -107,7 +107,7 @@ def main() -> int:
     ax.tick_params(length=0)
     ax.spines[["left", "bottom"]].set_visible(False)
     ax.set_xlabel("밤당 실제 이동 대수(평균, 대)", fontsize=S.FS_SMALL, color=S.INK2, labelpad=3)
-    ax.set_title("관측 대여 성공률(%)", fontsize=S.FS_SMALL, loc="left", color=S.INK2, pad=4, x=-0.07)
+    ax.set_title("가상 운영 대여 성공률(%)", fontsize=S.FS_SMALL, loc="left", color=S.INK2, pad=4, x=-0.07)
 
     # 확대 창: 예산 1500 부근에서 곡선 간 차이가 보이도록
     X0, X1, Y0, Y1 = 1150, 1670, 94.0, 99.3

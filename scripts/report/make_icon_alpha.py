@@ -22,7 +22,7 @@ DST = SRC / "derived"
 def main() -> None:
     DST.mkdir(exist_ok=True)
     meta = {}
-    for f in sorted(glob.glob(str(SRC / "06_icon_*_forest*.png"))):
+    for f in sorted(glob.glob(str(SRC / "06_icon_*_forest*.png")) + glob.glob(str(SRC / "10_team_*_forest.png"))):
         if f.endswith("route_forest.png"):          # 수정본(_b)을 쓴다
             continue
         src = Image.open(f)

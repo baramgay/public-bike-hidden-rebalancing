@@ -209,11 +209,11 @@
  },
  {
   "group": "정책·운영 자료",
-  "text": "행정안전부(2025). 2025 행정안전통계연보(2024.12.31 기준), 4-2-6-2 공영자전거 운영 현황.",
+  "text": "행정안전부(2025). 2025 행정안전통계연보(2024.12.31 기준), 4-2-7-2 공영자전거 운영 현황.",
   "url": "https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000013&nttId=120079",
   "n": 27,
-  "verified": false,
-  "source_doc": "grok 조사 data/metadata/grok_national_bikeshare_open_data_20261018.md(그록봇_추가지시서_07 사람 확인 대기)"
+  "verified": true,
+  "source_doc": "docs/codex_support/2026-10-18_분석보고서_심층최종검토_Opus전달.md(연보 물리 207쪽 원표 대조, 표 번호 4-2-6-2→4-2-7-2 정정)"
  },
  {
   "group": "정책·운영 자료",
@@ -250,7 +250,7 @@
  {
   "group": "데이터 출처",
   "n": 32,
-  "text": "유럽연합·유럽우주국. Copernicus DEM GLO-30 Public(30m 수치표면모델, N35 E128 타일). AWS 오픈데이터 레지스트리.",
+  "text": "유럽연합·유럽우주국. Copernicus DEM GLO-30 Public(30m 수치표면모델, N35 E128 타일). AWS 오픈데이터 레지스트리. 3쪽 지형 음영 고지: “produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved”.",
   "url": "https://registry.opendata.aws/copernicus-dem/",
   "verified": true,
   "source_doc": "docs/codex_support/2026-10-17_실제활용데이터_출처표초안_근거.json"

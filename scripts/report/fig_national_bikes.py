@@ -1,6 +1,6 @@
-"""시도별 공영자전거 대여 실적(2024): 자전거 번호가 담긴 이용기록을 공개하는 도시가 있는 시도 강조.
+"""시도별 공영자전거 대여 실적(2024): 전국 규모 설명용, 분석 사례 지역(경남, 창원 누비자)만 강조.
 
-자료: 행정안전부 2025 행정안전통계연보('24.12.31 기준) 4-2-6-2 공영자전거 운영 현황(참고문헌 27).
+자료: 행정안전부 2025 행정안전통계연보('24.12.31 기준) 4-2-7-2 공영자전거 운영 현황(참고문헌 27).
 값은 data/metadata/grok_national_bikeshare_open_data_20261018.md에 옮겨 적은 시도별 표이며, 합계가 연보 전국값과 일치하는지 실행 때 검사한다.
 자전거 번호 공개 도시: 창원·김해(경남), 대전(같은 문서 '이용 건 이력에 자전거번호가 보인 곳').
 """
@@ -22,7 +22,8 @@ D = {"서울": (2777, 45958, 43884991), "부산": (16, 1135, 82190), "대구": (
      "전북": (24, 616, 45021), "전남": (153, 1166, 290620), "경북": (193, 1938, 452655), "경남": (524, 6083, 4612154),
      "제주": (11, 36, 13158)}
 TOTAL = (5952, 69572, 58177104)      # 연보 전국 합계
-OPEN = {"대전": "대전 타슈", "경남": "창원 누비자·김해"}
+OPEN = {"대전": "대전 타슈", "경남": "창원 누비자·김해"}   # 기록용(번호 열 확인 도시가 있는 시도). 공개 범위 대표값으로 쓰지 않음
+CASE = {"경남": "분석 사례(창원 누비자)"}
 TOP = 6
 
 
@@ -31,7 +32,7 @@ def main() -> int:
     S.setup()
     rows = sorted(D.items(), key=lambda kv: -kv[1][2])
     top, rest = rows[:TOP], rows[TOP:]
-    items = [(k, v[2], k in OPEN) for k, v in top] + [(f"그 외 {len(rest)}개 시도", sum(v[2] for _, v in rest), False)]
+    items = [(k, v[2], k in CASE) for k, v in top] + [(f"그 외 {len(rest)}개 시도", sum(v[2] for _, v in rest), False)]
     fig, ax = plt.subplots(figsize=(88 * S.MM, 36 * S.MM))
     fig.subplots_adjust(left=0.2, right=0.83, top=0.99, bottom=0.02)
     ys = list(range(len(items)))[::-1]
@@ -42,7 +43,7 @@ def main() -> int:
         ax.text(v / 1e4 + vmax * 0.015, y, label, va="center", ha="left", fontsize=7.5,
                 color=S.FOREST if hi else S.INK2, fontweight="bold" if hi else "normal")
         if hi:
-            ax.text(vmax * 0.37, y, f"자전거 번호 공개({OPEN[name]})", va="center", ha="left", fontsize=7.5, color=S.ACCENT, clip_on=False)
+            ax.text(vmax * 0.37, y, CASE[name], va="center", ha="left", fontsize=7.5, color=S.ACCENT, clip_on=False)
     ax.set_yticks(ys)
     ax.set_yticklabels([n for n, _, _ in items], fontsize=7.5)
     for t, (_, _, hi) in zip(ax.get_yticklabels(), items):
@@ -54,7 +55,7 @@ def main() -> int:
     for sp in ax.spines.values():
         sp.set_visible(False)
     share = sum(D[k][2] for k in OPEN) / TOTAL[2]
-    out = {"source": "2025 행정안전통계연보 4-2-6-2(2024.12.31 기준)", "total": dict(zip(("stations", "bikes", "rentals"), TOTAL)),
+    out = {"source": "2025 행정안전통계연보 4-2-7-2(2024.12.31 기준)", "total": dict(zip(("stations", "bikes", "rentals"), TOTAL)),
            "open_regions": list(OPEN), "open_regions_rental_share": round(share, 4),
            "open_regions_bike_share": round(sum(D[k][1] for k in OPEN) / TOTAL[1], 4),
            "seoul_rental_share": round(D["서울"][2] / TOTAL[2], 4), "rows": [{"name": n, "rentals": v} for n, v, _ in items]}

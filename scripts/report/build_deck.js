@@ -18,7 +18,7 @@ const FIG = (name) => `outputs/report_figures/${name}.png`;
 const TITLE_MAIN = "기록 사이의 이동";
 const TITLE_SUB = "공공자전거 숨은 재배치 진단과 AI·형평 배치 제안";
 const CASE = "창원시 공영자전거 ‘누비자’ 이용기록 1,307만 건으로 본 전국 적용형 공개 분석";
-const TOPIC = "공공자전거 이용기록을 자전거 번호로 연결해 기록 없는 재배치 이동을 진단하고, AI 수요 예측과 취약 거점 최소 보장을 결합한 야간 재배치 방안 제안(창원 누비자 사례, 다른 도시에 그대로 적용 가능한 공개 방법)";
+const TOPIC = "공공자전거 이용기록을 자전거 번호로 연결해 기록 없는 재배치 이동을 진단하고, AI 수요 예측과 취약 거점 최소 보장을 결합한 야간 재배치 방안 제안(창원 누비자 사례, 다른 도시 이력에도 적용할 수 있는 공개 진단 절차)";
 const CODE_URL = "https://github.com/baramgay/public-bike-hidden-rebalancing";
 const RUN_HEAD = `${TITLE_MAIN} · ${TITLE_SUB}`;
 
@@ -152,13 +152,14 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   T(s, TITLE_MAIN, 16, 27, 178, 20, { fontFace: F.xb, fontSize: 46, color: C.forest, lineSpacingMultiple: 1.0 });
   T(s, TITLE_SUB, 16, 49, 178, 10, { fontFace: F.semi, fontSize: 19, color: C.ink, lineSpacingMultiple: 1.1 });
   T(s, CASE, 16, 61, 178, 7, { fontFace: F.semi, fontSize: 13.5, color: C.teal });
-  box(s, 16, 256, 178, 21, { fill: C.white });
-  T(s, `팀 ${TEAM}`, 21, 260, 168, 7, { fontFace: F.semi, fontSize: 13, color: C.forest });
-  T(s, `공개 공공데이터 ${DS.rows.length}종 · 이용기록 ${int(N.valid_rows / 1e4)}만 건 · 2023~2025년`, 21, 268.5, 168, 5.5,
+  box(s, -1, 278, 212, 20, { fill: C.white, r: 0 });    // 그림 속 자전거 바퀴(약 277mm) 아래로, 쪽 가장자리에 그림이 비치지 않게 바깥까지
+  fitImg(s, "design/sol/derived/10_team_gilieum_mark_tc.png", 16, 281.5, 20, 5.3);   // 팀 심볼, 본체 높이 약 5mm
+  T(s, `팀 ${TEAM}`, 26.4, 281.2, 100, 6, { fontFace: F.semi, fontSize: 13, color: C.forest, valign: "middle" });
+  T(s, `공개 공공데이터 ${DS.rows.length}종 · 이용기록 ${int(N.valid_rows / 1e4)}만 건 · 2023~2025년`, 16, 289, 110, 5,
     { fontSize: 10.5, color: C.ink2 });
-  // 공식 양식 1쪽 머리의 두 CI(원본 추출, design/form_ci/README.md). 하늘 배경에서는 숲과나눔 로고가 흐려 흰 상자 안에 둠
-  fitImg(s, "design/form_ci/hankyoreh.png", 130, 263.5, 22, 6, "right");
-  fitImg(s, "design/form_ci/supgwananum.png", 156, 262.5, 33, 8, "right");
+  // 공식 양식 1쪽 머리의 두 CI(원본 추출, design/form_ci/README.md). 하늘 배경에서는 숲과나눔 로고가 흐려 흰 띠 안에 둠
+  fitImg(s, "design/form_ci/hankyoreh.png", 135, 285.5, 22, 6, "right");
+  fitImg(s, "design/form_ci/supgwananum.png", 161, 284.5, 33, 8, "right");
 }
 
 // =====================================================================
@@ -207,7 +208,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const NB = N.fig.national_bikes;
   figHead(s, "전국 시도별 공영자전거 대여 실적(2024)", 110, 139.5, 88);
   img(s, FIG("national_bikes"), 110, 145, 88, 37.2);
-  cap(s, `자전거 번호 공개 도시가 있는 시도 = 전국 대여의 ${pct(NB.open_regions_rental_share)}(서울 따릉이는 번호 열 미확인). 자료: 2025 행정안전통계연보`,
+  cap(s, "자료: 2025 행정안전통계연보 표 4-2-7-2(2024.12.31 기준)",
     110, 182.6, 88, 8);
   const ED = N.ride_up_2024, EU = N.move_up_2024;
   T(s, [{ text: `오르막 비율: 사람이 탄 이동 ${pct(ED)}, 기록 없는 이동 ${pct(EU)}`, options: { fontFace: F.semi, color: C.forest } },
@@ -217,7 +218,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const why = [
     ["co2_t", "탄소 산정에서 빠진 배출", `운영사 탄소 감축량은 ‘이용 횟수 × 4.75km × 192g’으로 산정되며 **재배치 차량 배출은 미차감**. 2024년 재배치 경로 추정은 하루 약 ${int(N.truck_km_per_day_2024_cap20)}km`],
     ["hill_t", "고지대일수록 높은 의존도", `고도 상위 25% 거점은 대여의 **${pct(depHigh.dependency)}**가 기록 없는 이동 뒤 발생(하위 25%는 ${pct(depLow.dependency)}). 재배치 축소 시 **영향이 지역별로 불균등**`],
-    ["bike_t", "전국 공통 과제", "전국 공영자전거 69,572대·연 대여 5,818만 건(2024). 자전거 번호를 공개하는 창원·대전·김해는 **같은 코드로 바로 분석 가능**"],
+    ["bike_t", "전국 공통 과제", "전국 공영자전거 69,572대·연 대여 5,818만 건(2024). 자전거 번호가 담긴 이력(창원·대전·김해 등)은 **도시별 형식 변환 후 같은 진단 절차 적용 가능**"],
   ];
   why.forEach(([ic, t, d], i) => {
     const x = 12 + i * 63;
@@ -275,9 +276,11 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   // 칸보다 긴 낱말은 PowerPoint가 글자 중간에서 끊으므로 줄바꿈 위치를 직접 지정(글자 폭은 Pretendard 실측)
   const BR = { "Copernicus DEM GLO-30": "Copernicus DEM\nGLO-30", "소상공인시장진흥공단": "소상공인\n시장진흥공단",
     "보건의료빅데이터개방시스템": "보건의료빅데이터\n개방시스템", "AWS 오픈데이터 레지스트리": "AWS 오픈데이터\n레지스트리",
-    "종관기상관측(ASOS) 일자료": "종관기상관측(ASOS)\n일자료", "EG-TIPS(에너지온실가스 종합정보)": "EG-TIPS(에너지\n온실가스 종합정보)" };
+    "종관기상관측(ASOS) 일자료": "종관기상관측(ASOS)\n일자료", "EG-TIPS(에너지온실가스 종합정보)": "EG-TIPS(에너지\n온실가스 종합정보)",
+    "행정안전통계연보 2025(표 4-2-7-2)": "행정안전통계연보 2025\n(표 4-2-7-2)",
+    "공영자전거 운영 현황(시도별)": "공영자전거 운영 현황\n(시도별)" };
   const br = (t) => BR[t] ?? t;
-  const rowH = DS.rows.map((r) => (r.some((t) => br(t).includes("\n")) || r[3].length > 60 ? 7.0 : 5.4));   // 두 줄 행 실측 약 7mm(Pretendard 줄 높이 1.19em)
+  const rowH = DS.rows.map((r) => (r[3].length > 100 ? 8.6 : r.some((t) => br(t).includes("\n")) || r[3].length > 60 ? 7.0 : 5.4));   // 두 줄 행 실측 약 7mm(Pretendard 줄 높이 1.19em), URL 세 줄 행 8.6mm
   const tableEnd = 38 + rowH.reduce((a, b) => a + b, 0);
   const rows = DS.rows.map(([name, org, plat, url, why], i) => [
     cell(String(i + 1), { align: "center", color: C.teal, fontFace: F.semi }),
@@ -296,7 +299,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   pill(s, "분석과정 및 방법", 12, Y, 31);
   T(s, "5단계 전 과정을 코드로 재현(‘자료’ 번호는 위 표의 No.)", 46, Y + 0.9, 150, 5, { fontSize: 8.4, color: C.ink2 });
   const steps = [
-    ["data_t", "수집·정제", "3년 이용 1,307만 건 DuckDB 결합. 오류·중복 제거, 2025년 7월 결측은 0으로 채우지 않고 제외", "검사: 이용 − 자전거 수 = 연속쌍 수", "①②"],
+    ["data_t", "수집·정제", "3년 이용 1,307만 건 DuckDB 결합. 오류 정제·중복 점검, 2025년 7월 결측은 0으로 채우지 않고 제외", "검사: 이용 − 자전거 수 = 연속쌍 수", "①②"],
     ["trace_t", "자전거 연쇄 추적", "같은 번호의 반납 거점 ≠ 다음 대여 거점이면 기록 없는 이동. 간격·속도(시속 60km)·운영센터 규칙으로 8유형 분류", `핵심 이동 ${int(N.moved_3y)}건`, "①②⑭"],
     ["hill_t", "지형·생활 접근성", "30m 고도로 오르막 판정. 반경 300m 버스 운행 하위 25%, 또는 의료·약국·시장 중 2종 이상 거리 상위 25%면 취약 거점", `취약 ${N.vuln_count}곳(복합 ${N.vuln_both_count}곳)`, "③~⑧"],
     ["weather_t", "AI 수요 예측", "거점·날짜별 아침 필요 대수 예측. 경사 부스팅(포아송 손실), 과거 이력·요일·공휴일·전날 날씨·고도 입력", "학습→검증→시험 시간순 분리", "①⑨⑩"],
@@ -332,11 +335,11 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   ];
   s.addTable([[{ text: "사용 서비스", options: AH }, { text: "활용 범위", options: AH }, { text: "주요 프롬프트(요약)", options: AH }], ...ai], {
     x: mm(12), y: mm(Y + 66), w: mm(186), colW: [mm(39), mm(66), mm(81)],
-    rowH: [mm(5), ...ai.map(() => mm(9.4))], fontFace: F.reg, lineSpacingMultiple: 1.08,
+    rowH: [mm(5), ...ai.map(() => mm(8.4))], fontFace: F.reg, lineSpacingMultiple: 1.08,
     border: { type: "solid", pt: 0.4, color: C.line }, margin: [1, 2, 1, 2],
   });
 
-  sub(s, "결과 신뢰성 확보 장치", 12, Y + 123.5);
+  sub(s, "결과 신뢰성 확보 장치", 12, Y + 118.5);
   const guards = [
     ["보존 검사", "이용 − 자전거 수 = 연속쌍 수, 매 실행 확인"],
     ["시간순 분리", "2023.2~2024.9 학습, 2024년 4분기 검증, 2025년 상반기 시험"],
@@ -346,12 +349,12 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   ];
   guards.forEach(([t, d], i) => {
     const x = 12 + i * 37.6;
-    box(s, x, Y + 129, 35.6, 20, { fill: C.pale });
-    T(s, t, x + 2.5, Y + 130.8, 31, 4.5, { fontFace: F.semi, fontSize: 8.4, color: C.forest });
-    T(s, d, x + 2.5, Y + 135.8, 31.5, 12, { fontSize: 7.6, color: C.ink2, lineSpacingMultiple: 1.12 });
+    box(s, x, Y + 124, 35.6, 17, { fill: C.pale });
+    T(s, t, x + 2.5, Y + 125.6, 31, 4.5, { fontFace: F.semi, fontSize: 8.4, color: C.forest });
+    T(s, d, x + 2.5, Y + 130.4, 31.5, 10, { fontSize: 7.6, color: C.ink2, lineSpacingMultiple: 1.12 });
   });
   cap(s, "※ 기록 없는 이동의 실제 주체·차종은 기록에 없음. 묶음·야간·오르막 양상으로 재배치 차량 이동이 중심임을 추정했으며 모든 수치는 ‘추정 이동’ 기준",
-    12, Y + 150.5, 186, 4);
+    12, Y + 142.5, 186, 4);
 }
 
 // =====================================================================
@@ -364,7 +367,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   head(s, `숨은 이동은 언덕 위로: 고지대 거점 대여의 ${pct(depHigh.dependency, 0)}는 ‘옮겨진 자전거’`, 20.5);
 
   img(s, FIG("map_truck_dependency_2024"), 12, 30, 100, 103.7);
-  cap(s, fig("거점별 의존도 = 기록 없이 옮겨져 온 자전거 ÷ 대여(2024년, 대여 365건 이상 거점). 지형 음영: Copernicus DEM 30m"), 12, 134.5, 100, 7);
+  cap(s, fig("거점별 의존도 = 기록 없이 옮겨져 온 자전거 ÷ 대여(2024년, 대여 365건 이상 거점). 지형 음영: Copernicus WorldDEM-30 가공(고지문 참고문헌 32)"), 12, 134.5, 100, 7);
   img(s, "docs/codex_support/report_release_review_20261017/dependency_bars_60x74_review_v2.png", 116, 30, 60, 74);
   T(s, [{ text: fx(depHigh.dependency / depLow.dependency, 1), options: { fontFace: F.xb, fontSize: 17, color: C.accent } },
         { text: "배", options: { fontFace: F.semi, fontSize: 9, color: C.accent } }], 177, 51, 21, 8, { align: "center" });
@@ -401,9 +404,9 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   T(s, "해석", 16, 256.3, 20, 5, { fontFace: F.semi, fontSize: 9.5, color: C.teal });
   bullets(s, [
     "기록 없는 이동은 **묶음·야간·오르막** 양상이 뚜렷해 **차량 재배치와 부합**(정비 수거·기록 누락 일부 포함)",
-    "부담은 **언덕 위·외곽 거점과 아침 시간대 대여**에 집중 → 재배치 축소 시 **해당 거점이 먼저 영향**(4쪽 실험으로 확인)",
+    "부담은 **언덕 위·외곽 거점과 아침 시간대 대여**에 집중 → 재배치를 멈춘 가상 운영에서 **고지대 거점 성공률이 더 낮음**(4쪽)",
     `이동의 **${fx(N.fig.district_matrix.diagonal_pct, 0)}%가 같은 구 안**에서 발생 → **구 단위 권역 배치 계획** 가능`,
-    "자전거 번호가 담긴 이용기록만 있으면 **어느 도시든 산출 가능한 지표** → 5쪽 정책 ①(숨은 이동 지표 공개)로 연결",
+    "자전거 번호가 담긴 이력이면 **다른 도시도 형식 변환 후 산출 가능한 지표** → 5쪽 정책 ①(숨은 이동 지표 공개)로 연결",
   ], 30, 256.3, 164, 21, { size: 8.4, gap: 1.8 });
 }
 
@@ -432,7 +435,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   img(s, FIG("policy_frontier"), 12, 87.5, 101.3, 63.2);
   cap(s, fig("밤당 이동 대수별 대여 성공률(시험기간). 상한선은 실제 운영에서 알 수 없는 정보를 쓴 비교선"), 12, 151.2, 101, 7);
   img(s, FIG("notruck"), 120, 87.5, 62, 45.5);
-  figHead(s, "재배치를 멈추면", 120, 134, 78);
+  figHead(s, "가상 운영에서 재배치를 멈추면", 120, 134, 78);
   T(s, `대여 성공률이 **${pct(sim("none", 0).served_rate, 0)}**로 하락하고 고지대 거점은 **${fx(NT.groups["고지대 (상위 25%)"].none_served_rate_pct, 0)}%**까지 떨어짐. **언덕 위 거점일수록 재배치 의존이 큼**`,
     120, 139.5, 78, 12, { fontSize: 8.2, lineSpacingMultiple: 1.17 });
 
@@ -452,9 +455,9 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   box(s, 12, 221, 186, 64, { fill: C.white, line: C.light });
   T(s, "탄소로 환산하면", 16, 223.3, 60, 5, { fontFace: F.semi, fontSize: 9.5, color: C.forest });
   bullets(s, [
-    `AI 예측은 같은 서비스 수준에서 밤당 차량 주행을 약 ${fx(kmSaveAI, 0)}km 감축 → 연 ${fx(yr(kmSaveAI, co2.diesel_low), 1)}~${fx(yr(kmSaveAI, co2.diesel_high), 1)}t CO2(1톤 경유 화물차 기준). **예측만으로 줄어드는 탄소는 제한적**`,
-    `**큰 차이는 차종에서 발생**: 2024년 경로 추정 연 ${fx(N.truck_km_year_2024_cap20 / 1e4, 1)}만 km는 경유 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t, 전기 화물차 전환 시 **${fx(N.observed_co2_t_2024.ev, 0)}t(약 절반)**`,
-    "운영사 감축량 산식은 승용차 대체 100%를 가정하고 재배치 배출을 미차감. 대체율이 해외 사례처럼 낮으면(2~21%) 재배치 배출 비중 확대 → **‘순감축’ 회계 필요**",
+    `AI 예측은 같은 서비스 수준에서 밤당 주행 약 ${fx(kmSaveAI, 0)}km 감축(예산 곡선 보간·직선 경로 모형) → 연 ${fx(yr(kmSaveAI, co2.diesel_low), 1)}~${fx(yr(kmSaveAI, co2.diesel_high), 1)}t CO2(같은 효과 365일, 1톤 경유 화물차). **예측만으로 줄어드는 탄소는 제한적**`,
+    `**차종 차이가 더 큼**: 2024년 경로 추정 연 ${fx(N.truck_km_year_2024_cap20 / 1e4, 1)}만 km를 전량 경유로 달리면 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t, 전량 전기면 **${fx(N.observed_co2_t_2024.ev, 0)}t(약 절반)**. 실제 감축량은 차량별 연료·주행 확인 후 산정`,
+    "운영사 감축량 산식은 승용차 대체 100%를 가정하고 재배치 배출을 미차감. 대체율이 해외 사례처럼 낮으면(2~21%, 참고문헌 2·3) 재배치 배출 비중 확대 → **‘순감축’ 회계 필요**",
     `**AI 효과는 탄소보다 서비스·형평에서 뚜렷함**: 같은 예산으로 반년 대여 ${int(sim("ai", 1500).served - sim("rule4w", 1500).served)}건 추가 성공, 보장 추가 시 취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소`,
   ], 16, 229.5, 121, 33, { size: 8, gap: 1.3 });
   // 통계적 확인(95% 신뢰구간, scripts/analysis/stat_tests.py)
@@ -467,7 +470,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     `대여 성공률 AI−규칙 ${sgn(ar.diff * 100, 2)}%p(${ci(ar.ci95_diff, 100, 2)}), 보장 시 취약 거점 빈 시간 ${fx(vz.mean_diff, 2)}시간(${ci(vz.ci95_mean_diff, 1, 2)}). 개선 ${pct(vz.share_improved, 0)}·악화 ${pct(vz.share_worse, 0)}로 **효과는 일부 거점에 집중**`,
   ], 17.5, 269.3, 119, 13.5, { size: 7.6, gap: 0.8 });
   // 재배치 차량 연간 배출 미니 막대(2024 경로 추정 km × 배출계수)
-  figHead(s, "재배치 차량 연간 배출", 142, 223.3, 54);
+  figHead(s, "차종별 연간 배출(같은 거리)", 142, 223.3, 54);
   T(s, "2024년 경로 추정, tCO2", 142, 228.3, 54, 4, { fontSize: 7.6, color: C.ink2 });
   const bars = [["경유 화물차(연비 낮음)", N.observed_co2_t_2024.diesel_high, C.gray], ["경유 화물차(연비 높음)", N.observed_co2_t_2024.diesel_low, C.gray],
     ["전기 화물차", N.observed_co2_t_2024.ev, C.accent], ["AI 예측 절감분(경유)", yr(kmSaveAI, co2.diesel_high), C.mint]];
@@ -494,10 +497,10 @@ const yr = (km, f) => (km * 365 * f) / 1000;
       "재배치 부담이 큰 지역을 매월 점검, 탄소 ‘순감축’ 산정 자료로 사용"],
     ["ai_t", "② AI 예측 야간 배치", "거점별 내일 아침 필요 대수를 예측해 기상 예보와 연동, 운영자 승인 후 배차", "운영기관 배차 담당",
       `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대(${pct(saveAI / ES.rule4w.moves_per_night)}) 감축. 당일 날씨를 안다고 가정한 상한은 ${int(saveAIw)}대`],
-    ["equity_t", "③ 취약 거점 최소 2대", "버스·생활시설 접근이 약한 거점(최근 28일 이용)에 매일 야간 배치 때 최소 2대 우선 확보", "지자체(형평 목표)·운영기관",
+    ["equity_t", "③ 취약 거점 최소 2대", "최근 28일 이용이 있는 취약 거점(버스·생활시설 접근 약함)에 야간 배치 때 최소 2대 우선 확보", "지자체(형평 목표)·운영기관",
       `취약 거점 빈 시간 ${fx(vulnGain, 0)}% 감소, 전체 대여 성공률은 ${fx(Math.abs(EQ.overall_cost_ai_fair_minus_ai_pp), 3)}%p 하락에 그침`],
-    ["evtruck_t", "④ 재배치 차량 전기화", "1톤 경유 화물차를 전기 화물차로 교체하고 감축량에서 운영 배출 차감", "지자체 탄소중립 계획",
-      `재배치 배출 연 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t → ${fx(N.observed_co2_t_2024.ev, 0)}t`],
+    ["evtruck_t", "④ 재배치 차량 전기화", "2025년 도입한 전기 화물트럭 1대에 이어 남은 경유 배송차를 단계적 전환, 감축량에서 운영 배출 차감", "지자체 탄소중립 계획",
+      `같은 거리 기준 전량 경유 연 ${fx(N.observed_co2_t_2024.diesel_low, 0)}~${fx(N.observed_co2_t_2024.diesel_high, 0)}t, 전량 전기 ${fx(N.observed_co2_t_2024.ev, 0)}t(시나리오)`],
   ];
   pol.forEach(([ic, t, what, who, eff], i) => {
     const x = 12 + i * 47, w = 45;
@@ -557,17 +560,17 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   img(s, FIG("council_issues"), 72, 100, 84, 46.2);
   iconFit(s, "council_t", 158, 100, 12, 11);
   T(s, "시의회는 무엇을 말해 왔나", 158, 112, 40, 5, { fontFace: F.semi, fontSize: 8.8, color: C.forest });
-  T(s, `2020~2026년 누비자 관련 발언 ${CO.relevant}건 AI 분류. 재정(${pct(CO.share_of_relevant["재정"], 0)})·이용(${pct(CO.share_of_relevant["이용"], 0)}) 쟁점이 중심이고 ` +
+  T(s, `2020~2026년 누비자 언급 후보 ${CO.utterances}건 중 관련 발언 ${CO.relevant}건 AI 분류. 재정(${pct(CO.share_of_relevant["재정"], 0)})·이용(${pct(CO.share_of_relevant["이용"], 0)}) 쟁점이 중심이고 ` +
     `**재배치 ${pct(CO.share_of_relevant["재배치"], 0)}·형평 ${pct(CO.share_of_relevant["형평"], 0)}로 소수**. 재배치 같은 운영 부담은 **의회 논의에서도 비중이 작음**`,
   158, 118, 40, 28, { fontSize: 8, lineSpacingMultiple: 1.17 });
   cap(s, fig(`시의회 쟁점 비중(관련 발언 대비, 발언당 최대 2개). 두 모델 일치: 관련성 ${pct(CO.relevant_agreement, 0)}, 주제 ${pct(CO.primary_code_agreement, 0)}`), 72, 147, 126);
 
   sub(s, "기대효과와 파급효과", 72, 153);
   const effects = [
-    ["운영", `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대·주행 약 ${fx(kmSaveAI, 0)}km 감축, 인력·연료비 절감 여지`],
+    ["운영", `같은 대여 성공률에서 밤당 이동 ${int(saveAI)}대·주행 약 ${fx(kmSaveAI, 0)}km 감축(시험기간 보간 추정), 인력·연료비 절감 여지`],
     ["형평", `버스·생활시설 접근이 약한 거점의 빈 거치대 시간 ${fx(vulnGain, 0)}% 감소(05~24시 기준)`],
-    ["환경", "재배치 배출을 포함한 ‘순감축’ 회계, 전기 화물차 전환으로 재배치 배출 절반 감축"],
-    ["전국 확산", "자전거 번호가 담긴 이용기록 공개만으로 다른 도시에 같은 코드 적용 가능. 공공데이터 개방 기준에 ‘자전거 번호’ 포함 권고"],
+    ["환경", "재배치 배출을 포함한 ‘순감축’ 회계, 전량 전기 전환 시 같은 거리 배출 약 절반(시나리오)"],
+    ["전국 확산", "자전거 번호·시각·거점이 담긴 이력을 도시별로 변환하면 같은 진단 절차 적용 가능. 공공데이터 개방 기준에 ‘자전거 번호’ 포함 권고"],
   ];
   effects.forEach(([t, d], i) => {
     const y = 159 + i * 10.6;
@@ -576,7 +579,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
     T(s, d, 89, y, 79.5, 9.6, { fontSize: 8, color: C.ink, valign: "middle", lineSpacingMultiple: 1.1 });
   });
   fitImg(s, "design/sol/derived/09_korea_network_forest_w.png", 172.5, 158.5, 25.5, 25.5, "center");   // 개념도(실제 확산 실적·행정경계 아님)
-  cap(s, "개념도: 같은 코드로\n다른 도시에 적용", 172.5, 184.5, 25.5, 8);
+  cap(s, "개념도: 같은 절차를\n다른 도시로", 172.5, 184.5, 25.5, 8);
 
   sub(s, "브리핑 생성 흐름(LangGraph, 사람 승인 포함)", 72, 204.5, 126);
   const flow = ["초안 작성(LLM)", "숫자·거점명 자동 대조", "오류 시 재작성(최대 2회)", "운영자 승인 후 배차"];
