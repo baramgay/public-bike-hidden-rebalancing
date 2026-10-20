@@ -1,5 +1,5 @@
 # 실제 수행한 공개 파일 수집 명령 보존. 실행하면 같은 경로를 덮어쓰므로 재현 전 보존본을 복사한다.
-param([string]$ProjectRoot='C:/업무/교통공모전')
+param([string]$ProjectRoot='.')
 $ErrorActionPreference='Stop'
 $root="$ProjectRoot/data/raw/accessibility_facilities"
 New-Item -ItemType Directory -Path $root -Force|Out-Null

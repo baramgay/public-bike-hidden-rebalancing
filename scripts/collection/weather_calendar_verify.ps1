@@ -1,5 +1,5 @@
 # 수집 중 사용한 실제 검증 로직. 파일 실행 없이 명령으로 수행한 내용을 보존.
-param([string]$ProjectRoot = 'C:/업무/교통공모전')
+param([string]$ProjectRoot = '.')
 $ErrorActionPreference = 'Stop'
 foreach ($yr in 2022..2025) {
     $path = "$ProjectRoot/data/raw/weather/isd_changwon_$yr.gz"

@@ -1,7 +1,7 @@
 # 거점·일 필요 대수(q) AI 예측
 
-작성: 2026-10-17 20시 Claude Code. 코드 `scripts/analysis/forecast_station_day_need.py`, 출력 `data/processed/forecast/q_pred_{validation,test}.parquet`, `q_metrics.csv`, `q_metrics_segments.csv`, `q_model_lock.json`.
-Codex의 시간×거점 예측(`forecast_station_flows.py`, hist_gb_poisson)은 재배치 결정 단위에서 경험 규칙보다 나쁨(검증기간 점검, `rebalancing_sim.md`) → 결정 단위 직접 예측으로 대체. 예측 하위 에이전트가 같은 과제를 진행하다 세션 한도로 중단돼 부모가 별도 파일로 구현(에이전트 수정 중 파일은 건드리지 않음)
+작성: 2026-10-17. 코드 `scripts/analysis/forecast_station_day_need.py`, 출력 `data/processed/forecast/q_pred_{validation,test}.parquet`, `q_metrics.csv`, `q_metrics_segments.csv`, `q_model_lock.json`.
+처음 만든 시간×거점 예측(`forecast_station_flows.py`, hist_gb_poisson)은 재배치 결정 단위에서 경험 규칙보다 나빠(검증기간 점검, `rebalancing_sim.md`) 결정 단위 직접 예측으로 바꿨다.
 
 ## 1. 예측 대상
 - q(거점, 날) = 그날 아침(02시)에 있어야 관측된 대여를 모두 감당할 수 있는 최소 대수 = max_k(Σ대여₀₂…ₖ − Σ반납₀₂…ₖ₋₁), 0 이상. 같은 시간 안에서는 대여 먼저
@@ -14,8 +14,8 @@ Codex의 시간×거점 예측(`forecast_station_flows.py`, hist_gb_poisson)은 
 - 달력: 요일, 월, 공휴일·전날·다음날 공휴일, 주말·공휴일 여부(관공서 공휴일, KASI 표 + 발표 후 지정분 보완)
 - 날씨(누출 없음): 전날 강수·평균기온·최고기온
 - 거점 특성: 지면 고도
-- 'AI+날씨' 판에만: 당일 강수·강수 1mm 이상 여부·평균기온·최고기온·평균풍속 → **당일 관측값을 기상예보 대신 쓴 상한 성격**. 실제 운영에서는 전날 발표 예보로 대체해야 함(과거 단기예보 확보: `그록봇_추가지시서_05.md`)
-- 강수 결측 규칙: ASOS 일자료 `sumRn` 빈칸 685일 중 684일은 강수 현상 기록 없음 → 무강수 0, 1일(2023-11-29, 1분 비 기록)은 측정 불가 미량 → 0. 시간자료는 쓰지 않음(전부 빈 날 0 합산 오류 회피, `docs/codex_support/2026-10-17_grok04_결과검토.md`)
+- 'AI+날씨' 판에만: 당일 강수·강수 1mm 이상 여부·평균기온·최고기온·평균풍속 → 당일 관측값을 기상예보 대신 쓴 상한 성격. 실제 운영에서는 전날 발표 예보로 대체해야 함(과거 단기예보는 확보하지 못함)
+- 강수 결측 규칙: ASOS 일자료 `sumRn` 빈칸 685일 중 684일은 강수 현상 기록 없음 → 무강수 0, 1일(2023-11-29, 1분 비 기록)은 측정 불가 미량 → 0. 시간자료는 쓰지 않음(전부 빈 날을 0으로 합산하는 오류 회피)
 
 ## 3. 모형과 검증 절차
 - HistGradientBoostingRegressor(손실 poisson, 학습률 0.05, 반복 400, 잎 31, 최소 표본 40, L2 1.0, seed 42) — 설정은 실행 전 고정, 검증 결과로 바꾸지 않음

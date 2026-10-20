@@ -353,8 +353,7 @@ def weather_tables(hourly_csv: Path, daily_csvs) -> tuple[pd.DataFrame, pd.DataF
     """ASOS 155 hourly rain/temperature and daily totals, missing kept as NaN.
 
     Hourly rn: a blank stays missing (NaN), never 0. ASOS reports precipitation every
-    3 hours in Nov~Mar and the blank meaning is unconfirmed (docs/codex_support
-    2026-10-17_grok04_결과검토.md G04-R01/R02); rnQcflg 9 is missing as well.
+    3 hours in Nov~Mar and the blank meaning is unconfirmed; rnQcflg 9 is missing as well.
     Daily sumRn blank is a no-rain day -> 0: of 685 blank days only 2023-11-29 has a
     rain record in iscs (trace, sumRnDur 0), while all 411 non-blank days have one.
     Daily rain features therefore come from sumRn only. Other gaps (one maxTa) stay NaN.

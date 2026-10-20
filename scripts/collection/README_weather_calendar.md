@@ -8,8 +8,8 @@
 
 재현명령(PowerShell 7):
 
-    pwsh -NoProfile -File scripts/collection/weather_calendar_verify.ps1 -ProjectRoot C:/업무/교통공모전
-    pwsh -NoProfile -File scripts/collection/weather_calendar_collect.ps1 -ProjectRoot C:/업무/교통공모전
+    pwsh -NoProfile -File scripts/collection/weather_calendar_verify.ps1 -ProjectRoot .
+    pwsh -NoProfile -File scripts/collection/weather_calendar_collect.ps1 -ProjectRoot .
 
 수집 스크립트는 향후 재현용으로, 검증 스크립트는 기존 파일 확인용으로 구별한다. Python 패키지·외부 패키지 의존성은 없다. GSOD는 °F/knot/inch, ISD는 UTC·고정폭·품질코드를 주의한다. 2025는 8월24일 종료하며 달력 임시공휴일 보완과 과거 인구 품질문제가 미해결이다.
 실제 실행환경: PowerShell 7.6.7; .NET 10.0.13; Windows.

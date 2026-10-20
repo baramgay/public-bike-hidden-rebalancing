@@ -1,4 +1,4 @@
-﻿"""grok_followup_04: 상가(상권)정보 2026-06 경남 → 창원5구 식료품 소매 후보 추출 (현재시점 보완후보, 2025 시설 아님)."""
+﻿"""상가(상권)정보 2026-06 경남 → 창원5구 식료품 소매 후보 추출 (현재시점 보완후보, 2025 시설 아님)."""
 import pandas as pd,sys,json,hashlib,os
 sys.stdout.reconfigure(encoding="utf-8")
 R="data/raw/grok_followup_04/20261017/"; O="data/processed/grok_followup_04/20261017/"

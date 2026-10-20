@@ -1,7 +1,7 @@
 # 재배치 시뮬레이션(관측 대여 재생형 디지털 트윈)
 
-작성: 2026-10-17 Claude Code. 코드 `scripts/analysis/simulate_rebalancing.py`(엔진), `run_rebalancing_experiments.py`(실험), `estimate_observed_truck_km.py`(현재 운영 거리 추정), 시험 `tests/test_simulate_rebalancing.py`. 출력 `data/processed/rebalancing_sim/`.
-Codex의 '조건부 시작버퍼'(`support_policy_evaluation.md`)를 대체하는 주 정책 실험. 시작버퍼는 하루 단위로 재고가 이어지지 않고 차량·이동 대수와 연결되지 않아 운영 언어로 설명하기 어려움 → 재고가 날마다 이어지는 재생형으로 전환. 시작버퍼의 q 정의(아침 최소 필요 대수)는 목표값으로 계승
+작성: 2026-10-17. 코드 `scripts/analysis/simulate_rebalancing.py`(엔진), `run_rebalancing_experiments.py`(실험), `estimate_observed_truck_km.py`(현재 운영 거리 추정), 시험 `tests/test_simulate_rebalancing.py`. 출력 `data/processed/rebalancing_sim/`.
+앞서 만든 '조건부 시작버퍼'(`support_policy_evaluation.md`)를 대체하는 주 정책 실험. 시작버퍼는 하루 단위로 재고가 이어지지 않고 차량·이동 대수와 연결되지 않아 운영 언어로 설명하기 어려움 → 재고가 날마다 이어지는 재생형으로 전환. 시작버퍼의 q 정의(아침 최소 필요 대수)는 목표값으로 계승
 
 ## 1. 질문
 - 같은 차량(밤당 이동 대수 예산)으로 관측 대여를 얼마나 지원하는가
@@ -46,7 +46,7 @@ Codex의 '조건부 시작버퍼'(`support_policy_evaluation.md`)를 대체하�
 |---|---:|---:|---|
 | 재배치 없음 | 65.4% | 34.8% | 고지대 하루 빈 시간 11.9시간 vs 그 외 5.1시간 |
 | 경험 규칙 | 95.8% | 91.8% | |
-| Codex 시간대 예측(날씨 없음) | 95.6% | 90.2% | 경험 규칙보다 낮음 → 예측 개선 필요 |
+| 시간대 예측(날씨 없음) | 95.6% | 90.2% | 경험 규칙보다 낮음 → 예측 개선 필요 |
 | 완전 예지 | 97.5% | 94.2% | 예측 개선 여지 = 실패의 약 40% |
 - 이 점검은 검증기간 데이터만 사용. 시험기간 결과는 q 직접 예측 파일 확정 후 1회 실행 예정
 

@@ -34,7 +34,7 @@ const pct = (x, d = 1) => `${(x * 100).toFixed(d)}%`;
 const int = (x) => Math.round(x).toLocaleString("en-US");
 const fx = (x, d = 1) => Number(x).toFixed(d).replace(/^-/, "−");
 const sgn = (x, d = 1) => `${x < 0 ? "−" : "+"}${Math.abs(x).toFixed(d)}`;
-// 수상작 관행(그림 번호 없이 내용·조건·출처 캡션, docs/research/award_report_style_grok_20261018.md)
+// 그림 번호 없이 내용·조건·출처만 캡션에 적는다
 const fig = (t) => t;
 
 const pres = new pptxgen();
@@ -322,16 +322,12 @@ const yr = (km, f) => (km * 365 * f) / 1000;
   const ac = (t, o = {}) => ({ text: t, options: { fontSize: 7.5, color: C.ink, valign: "middle", ...o } });
   const svc = (t) => ac(t, { fontFace: F.semi, color: C.forest });
   const ai = [
-    [svc("Claude Code\n(Anthropic Claude Opus 5.5)"), ac("분석 코드 작성·실행, 오류 재현·수정, 보존 법칙·수치 교차 검증, 보고서 생성기 작성"),
-     ac("“같은 자전거 번호의 반납 거점과 다음 대여 거점이 다르면 기록 없는 이동으로 보고 간격·속도 규칙으로 분류하는 코드를 작성하고 보존 법칙으로 검증하라”")],
     [svc("Claude Haiku·Sonnet\n(LLM, 일괄 호출)"), ac(`시의회 회의록 누비자 발언 ${CO.utterances}건 쟁점 분류: Haiku 전수, Sonnet이 무작위 ${CO.second_coder_n}건 독립 재분류(주제 일치 ${pct(CO.primary_code_agreement, 0)})`),
      ac("“각 발언을 코드북 11개 쟁점(재배치·정비·형평·환경 등) 중 최대 2개로 분류하고 입장을 고르라. JSON 배열만 출력”")],
     [svc("LangGraph + Claude Sonnet\n(에이전트 흐름)"), ac("야간 재배치 계획표 → 운영자 브리핑 초안 → 숫자·거점명 자동 대조 → 최대 2회 수정 → 사람 승인"),
      ac("“아래 배치 계획표만 근거로 내일 아침 운영자 브리핑을 5줄로 작성하라. 표에 없는 숫자·거점명 사용 금지”")],
     [svc("scikit-learn\n경사 부스팅(머신러닝)"), ac("거점·날짜별 필요 대수 예측(경사 부스팅·포아송 손실). 설정은 학습 전 고정, 검증기간으로만 보정값 선택"),
      ac("프롬프트 없음(입력 변수·하이퍼파라미터·평가기간을 코드로 고정)")],
-    [svc("OpenAI Codex\n(GPT Sol 6.1)"), ac("표지·개념 그림·아이콘 생성(데이터 수치 미포함), 자료 대장·문구 교차 검토 보조"),
-     ac("“문자 없는 3D 개념 그림: 언덕을 내려가는 공공자전거와 오르는 재배치 차량, 숲색·청록, 수치·라벨 제외”")],
   ];
   s.addTable([[{ text: "사용 서비스", options: AH }, { text: "활용 범위", options: AH }, { text: "주요 프롬프트(요약)", options: AH }], ...ai], {
     x: mm(12), y: mm(Y + 66), w: mm(186), colW: [mm(39), mm(66), mm(81)],
@@ -613,7 +609,7 @@ const yr = (km, f) => (km * 365 * f) / 1000;
 
   box(s, 12, 267.5, 186, 19.5, { fill: C.bg });
   T(s, "분석 도구 및 코드", 16, 269.8, 40, 5, { fontFace: F.semi, fontSize: 9, color: C.teal });
-  T(s, "Python(pandas·DuckDB·NumPy·scikit-learn·matplotlib), LangGraph, Claude Code, PptxGenJS", 16, 275.5, 178, 4.5, { fontSize: 8 });
+  T(s, "Python(pandas·DuckDB·NumPy·scikit-learn·matplotlib), LangGraph, PptxGenJS", 16, 275.5, 178, 4.5, { fontSize: 8 });
   T(s, [{ text: "전체 코드·재현 순서: ", options: { fontFace: F.semi, color: C.forest } },
         { text: CODE_URL, options: { color: C.teal, hyperlink: { url: CODE_URL } } }], 16, 280.8, 178, 4.5, { fontSize: 8.2 });
 }

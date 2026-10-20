@@ -1,5 +1,5 @@
 # 보존 HTML만 읽는 검증·추출 명령. 네트워크 요청 없음.
-param([string]$ProjectRoot='C:/업무/교통공모전')
+param([string]$ProjectRoot='.')
 $ErrorActionPreference='Stop'
 $path="$ProjectRoot/data/raw/inventory/nubija_terminal_status_20261016.html"
 $s=Get-Content -Raw -LiteralPath $path

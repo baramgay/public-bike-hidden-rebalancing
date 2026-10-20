@@ -240,7 +240,7 @@
 
 ## 8. 재현 명령
 
-작업 폴더: `C:\업무\교통공모전`
+작업 폴더: 저장소 루트
 
 ```
 python scripts/collection/civic_text_collect.py

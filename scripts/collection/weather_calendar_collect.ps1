@@ -1,6 +1,6 @@
 # 수집 과정에서 사용한 PowerShell 명령을 재현용으로 보존한 스크립트.
 # 실행하지 않고 보존했다. 모델/특징생성/데이터 정제는 수행하지 않는다.
-param([string]$ProjectRoot = 'C:/업무/교통공모전')
+param([string]$ProjectRoot = '.')
 $ErrorActionPreference = 'Stop'
 foreach ($folder in @('weather','calendar','population')) {
     New-Item -ItemType Directory -Path "$ProjectRoot/data/raw/$folder" -Force | Out-Null

@@ -1,4 +1,4 @@
-﻿"""grok_followup_04 ASOS 강수 진단 (읽기 전용). 시간이동·보정 없음.
+﻿"""ASOS 강수 진단 (읽기 전용). 시간이동·보정 없음.
 공식 근거: KMA 국가기후데이터센터 ASOS 자료설명(강수량 겨울철 11~3월 3시간 간격 제공; QC 0정상/1오류/9결측),
 data.go.kr 15057210 활용가이드(플래그 정상=null,오류=1,결측=9; rn 단위 mm)."""
 import csv,glob,collections,sys,json

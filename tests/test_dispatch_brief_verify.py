@@ -21,11 +21,11 @@ class TestVerifyDraft(unittest.TestCase):
         text = "옮길 자전거 1500대\n1. 창원중앙도서관 46대 (최소 보장)\n2. 진해고등학교 38대\n창원시청 후문 버스정류소 수거 2 → 창원시청 배치 2"
         self.assertEqual(verify_draft(FACTS, text, KNOWN), [])
 
-    def test_wrong_count_for_planned_station(self):        # Codex 반례 ①: 38은 다른 거점 값이라 숫자 검사는 통과
+    def test_wrong_count_for_planned_station(self):        # 반례 1: 38은 다른 거점 값이라 숫자 검사는 통과
         errs = verify_draft(FACTS, "창원중앙도서관 38대 배치", KNOWN)
         self.assertTrue(any(e.startswith("거점-대수 불일치: 창원중앙도서관 38대") for e in errs), errs)
 
-    def test_fake_station(self):                           # Codex 반례 ②: 대장에 없는 이름
+    def test_fake_station(self):                           # 반례 2: 대장에 없는 이름
         errs = verify_draft(FACTS, "검토용가상거점 38대 배치", KNOWN)
         self.assertIn("계획에 없는 거점 의심: 검토용가상거점 38대", errs)
 

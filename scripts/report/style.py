@@ -6,7 +6,7 @@
   (dataviz 검증 chroma floor FAIL) 데이터 표식에는 #00897B를 쓰고 #137F7B는 도형·글자에 쓴다
 - 맥락·비교 기준: CONTEXT(회색, 의도적 무채색) — 강조색 대 회색 쌍은 색각 이상 ΔE 12.3, 정상 17.7로 통과
 - 두 번째 강조가 필요하면 FOREST + 선 모양(점선 등)·직접 라벨을 함께 쓴다(색만으로 구분하지 않음)
-글꼴: 최신 사용자 확정 Pretendard 통일(`docs/codex_support/2026-10-17_폰트_사전점검.md` U20). 바꿀 때는 FONT 한 줄
+글꼴: Pretendard로 통일. 바꿀 때는 FONT 한 줄
 """
 from __future__ import annotations
 

@@ -1,6 +1,6 @@
 # 공식 status 페이지를 1회 읽어 보존한 실제 명령. 반복 폴링하지 않는다.
 # 이용조건 재확인 전 이 수집 부분을 다시 실행하지 않는다.
-param([string]$ProjectRoot='C:/업무/교통공모전')
+param([string]$ProjectRoot='.')
 $ErrorActionPreference='Stop'
 $folder="$ProjectRoot/data/raw/inventory"
 New-Item -ItemType Directory -Path $folder -Force | Out-Null

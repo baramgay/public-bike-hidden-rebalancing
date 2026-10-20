@@ -1,6 +1,6 @@
 # 통계 검정: 보고서 수치의 불확실성·유의성 보강
 
-작성: 2026-10-18 Claude Code. 코드 `scripts/analysis/stat_tests.py`, 출력 `data/processed/stats/stat_tests.json`(키: `forecast`, `equity_station`, `ai_vs_rule_station`, `dependency_regression`, `meta`).
+작성: 2026-10-18. 코드 `scripts/analysis/stat_tests.py`, 출력 `data/processed/stats/stat_tests.json`(키: `forecast`, `equity_station`, `ai_vs_rule_station`, `dependency_regression`, `meta`).
 기존 분석 산출물은 수정하지 않고 읽기만 함(원자료 `data/raw` 미사용). 난수 seed 42, 부트스트랩 2,000회, 신뢰구간은 백분위(2.5%~97.5%). 재실행 시 출력 파일 해시 동일(결정적).
 
 ## 1. 요약
@@ -115,7 +115,6 @@
 
 ## 6. 재현
 ```powershell
-cd C:\업무\교통공모전
 python scripts/analysis/stat_tests.py
 ```
 - 실행 약 3초. 입력은 읽기만 함. `results_v2.csv`·`q_metrics.csv`와 대조 단언이 하나라도 어긋나면 중단

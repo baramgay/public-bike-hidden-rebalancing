@@ -1,6 +1,6 @@
 # 참고문헌(보고서 마지막 쪽 원본: references.json에서 생성)
 
-URL 사람 확인: `data/metadata/grokbot_url_final_check_20261018.md`(2026-10-18). ※표시는 확인 미완
+URL 확인: 2026-10-18. ※표시는 확인 미완
 
 ## 선행연구
 
@@ -63,5 +63,3 @@ URL 사람 확인: `data/metadata/grokbot_url_final_check_20261018.md`(2026-10-1
 45. LangGraph 1.2.12. 배치 브리핑 상태 그래프(초안 작성·자동 검증·사람 승인). https://www.langchain.com/langgraph
 46. Matplotlib 3.10.9. 그래프·지도 그림. https://matplotlib.org
 47. PptxGenJS 4.0.1. 보고서(A4 PPTX) 조판. https://gitbrent.github.io/PptxGenJS/
-48. Anthropic. Claude Code(사용 모델: Claude Opus 5.5·Sonnet 5.5·Haiku 5.5). 분석 설계·코드·검증, 시의회 발언 분류. https://claude.com/ko/product/claude-code
-49. OpenAI. Codex(사용 모델: GPT Sol 6.1). 공식자료 조사·검토 보조, 개념 그림·아이콘 생성. https://openai.com/codex
